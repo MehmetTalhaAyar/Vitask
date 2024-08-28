@@ -14,7 +14,7 @@ namespace Entities.Concrete
         public int Priority { get; set; } // 1-9 arasında değer alacak
         public DateTime DueDate { get; set; }
         public DateTime CreatedOn { get; set; } = DateTime.Now;
-        public DateTime UpdatedOn { get; set; }
+        public DateTime? UpdatedOn { get; set; }
 
         public int ResponsibleId { get; set; }
 

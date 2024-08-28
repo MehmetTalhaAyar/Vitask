@@ -26,7 +26,12 @@ namespace Business.Concrete
             return _taskDal.GetById(id);
         }
 
-        public void Insert(Task t)
+		public int GetTaskCountForUser(int UserId)
+		{
+            return _taskDal.GetTaskCountForUser(UserId);
+		}
+
+		public void Insert(Task t)
         {
             _taskDal.Insert(t);
         }

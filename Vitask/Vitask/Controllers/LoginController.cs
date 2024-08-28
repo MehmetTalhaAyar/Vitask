@@ -11,13 +11,15 @@ namespace Vitask.Controllers
     {
         private readonly SignInManager<AppUser> _signInService;
 
+        private readonly UserManager<AppUser> _userService;
 
-        public LoginController(SignInManager<AppUser> signInService)
-        {
-            _signInService = signInService;
-        }
+		public LoginController(SignInManager<AppUser> signInService, UserManager<AppUser> userService)
+		{
+			_signInService = signInService;
+			_userService = userService;
+		}
 
-        [AllowAnonymous]
+		[AllowAnonymous]
         [HttpGet]
         public IActionResult Index()
         {
@@ -30,7 +32,7 @@ namespace Vitask.Controllers
         {
 
 
-
+            
             var result = await _signInService.PasswordSignInAsync(loginViewModel.Email, loginViewModel.Password, false, false);
 
             if (result.Succeeded)
@@ -57,10 +59,30 @@ namespace Vitask.Controllers
         public async Task<IActionResult> SignUp(SignUpViewModel signUpViewModel)
         {
 
+            AppUser user = new AppUser()
+            {
+                Name = signUpViewModel.Name,
+                Surname = signUpViewModel.Surname,
+                Email = signUpViewModel.Email,
+                UserName = signUpViewModel.Name + signUpViewModel.Surname
 
+            };
 
+            var result = await _userService.CreateAsync(user, signUpViewModel.Password);
 
-            return View();
+            if (result.Succeeded)
+            {
+                return RedirectToAction("Index", "Dashboard");
+            }
+            else
+            {
+                foreach(var item in result.Errors)
+                {
+                    ModelState.AddModelError("", item.Description);
+                }
+            }
+
+            return View(signUpViewModel);
         }
 
 

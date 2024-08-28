@@ -4,5 +4,7 @@ namespace Business.Abstract
 {
     public interface ITaskService : IGenericService<Task>
     {
-    }
+
+		int GetTaskCountForUser(int UserId);
+	}
 }

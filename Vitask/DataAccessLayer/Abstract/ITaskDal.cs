@@ -5,5 +5,7 @@ namespace DataAccessLayer.Abstract
     public interface ITaskDal : IGenericDal<Task>
     {
 		int GetTaskCountForUser(int UserId);
+
+		List<Task> GetAllByUserId(int UserId);
 	}
 }

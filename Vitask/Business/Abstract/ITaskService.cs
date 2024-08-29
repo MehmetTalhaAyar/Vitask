@@ -6,5 +6,7 @@ namespace Business.Abstract
     {
 
 		int GetTaskCountForUser(int UserId);
+
+		List<Task> GetAllByUserId(int UserId);
 	}
 }

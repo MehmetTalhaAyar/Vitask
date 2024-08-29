@@ -1,0 +1,96 @@
+﻿@using Entities.Concrete
+@model List<Project>
+@
+@{
+	ViewData["Title"] = "Index";
+	Layout = "~/Views/Shared/LayoutUI.cshtml";
+}
+
+<div class="form-group">
+
+	<button data-toggle="modal"
+			data-target="#signup-modal"
+			class="btn btn-rounded btn-outline-info">
+		Yeni Proje oluştur
+	</button>
+
+</div>
+
+
+<div class="col-12">
+	<div class="row">
+
+		@if (Model.Count != 0)
+		{
+			@foreach (var item in Model)
+			{
+
+
+				<div class="col-lg-3 col-md-6">
+					<!-- Card -->
+					<div class="card">
+						<img class="card-img-top img-fluid" src="~/adminmart-master/assets/images/big/img1.jpg"
+							 alt="Card image cap">
+						<div class="card-body">
+							<h4 class="card-title">Card title</h4>
+							<p class="card-text">
+								Some quick example text to build on the card title and make
+								up the bulk of the card's content.
+							</p>
+							<a href="javascript:void(0)" class="btn btn-primary">Go somewhere</a>
+						</div>
+					</div>
+					<!-- Card -->
+				</div>
+
+			}
+		}
+	</div>
+
+</div>
+
+
+
+<div id="signup-modal" class="modal fade" tabindex="-1" role="dialog"
+	 aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+
+			<div class="modal-body">
+				<div class="text-center mt-2 mb-4">
+					<a href="index.html" class="text-success">
+						<span>
+							<img class="mr-2" src="/assets/images/vitalen-bt-logo.png"
+								 alt="" height="18">
+						</span>
+					</a>
+				</div>
+
+				<form class="pl-3 pr-3" method="post">
+
+					<div class="form-group">
+						<label for="projectName">Project Name</label>
+						<input class="form-control" type="text" id="projectName"
+							   required="" >
+					</div>
+
+					<div class="form-group">
+						<label for="description">Description</label>
+						<input class="form-control" type="text" id="description"
+							   required="" >
+					</div>
+
+					
+
+					<div class="form-group text-center">
+						<button class="btn btn-primary" type="submit">
+							Add new Project
+						</button>
+					</div>
+
+				</form>
+
+			</div>
+		</div>
+	</div>
+</div>

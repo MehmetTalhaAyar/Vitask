@@ -5,12 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using Entities.Concrete;
 
-namespace DataAccessLayer.Abstract
+namespace Business.Abstract
 {
-    public interface IProjectDal : IGenericDal<Project>
+    public interface IProjectUserService : IGenericService<ProjectUser>
     {
 
-        List<Project> GetAllByUserId(int userId);
-
+        
     }
 }

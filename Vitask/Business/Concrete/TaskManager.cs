@@ -21,7 +21,12 @@ namespace Business.Concrete
             return _taskDal.GetAll();
         }
 
-        public Task GetById(int id)
+		public List<Task> GetAllByUserId(int UserId)
+		{
+			return _taskDal.GetAllByUserId(UserId);
+		}
+
+		public Task GetById(int id)
         {
             return _taskDal.GetById(id);
         }

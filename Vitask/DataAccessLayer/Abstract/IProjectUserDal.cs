@@ -7,10 +7,9 @@ using Entities.Concrete;
 
 namespace DataAccessLayer.Abstract
 {
-    public interface IProjectDal : IGenericDal<Project>
+    public interface IProjectUserDal : IGenericDal<ProjectUser>
     {
 
-        List<Project> GetAllByUserId(int userId);
-
+        
     }
 }

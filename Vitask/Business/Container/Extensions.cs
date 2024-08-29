@@ -25,6 +25,8 @@ namespace Business.Container
             Services.AddScoped<ITaskDal, TaskDal>();
             Services.AddScoped<ITaskService, TaskManager>();
 
+            Services.AddScoped<IProjectUserDal, ProjectUserDal>();
+            Services.AddScoped<IProjectUserService, ProjectUserManager>();
         }
     }
 }

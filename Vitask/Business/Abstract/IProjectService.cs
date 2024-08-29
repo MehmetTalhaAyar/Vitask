@@ -9,5 +9,7 @@ namespace Business.Abstract
 {
     public interface IProjectService : IGenericService<Project>
     {
+
+        List<Project> GetAllByUserId(int userId);
     }
 }

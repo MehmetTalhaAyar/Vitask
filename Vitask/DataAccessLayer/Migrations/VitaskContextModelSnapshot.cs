@@ -176,6 +176,29 @@ namespace DataAccessLayer.Migrations
                     b.ToTable("Projects");
                 });
 
+            modelBuilder.Entity("Entities.Concrete.ProjectUser", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ProjectId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProjectId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ProjectUsers");
+                });
+
             modelBuilder.Entity("Entities.Concrete.Tag", b =>
                 {
                     b.Property<int>("Id")
@@ -369,6 +392,25 @@ namespace DataAccessLayer.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Entities.Concrete.ProjectUser", b =>
+                {
+                    b.HasOne("Entities.Concrete.Project", "Project")
+                        .WithMany("Users")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Entities.Concrete.AppUser", "User")
+                        .WithMany("Projects")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Project");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Entities.Concrete.Task", b =>
                 {
                     b.HasOne("Entities.Concrete.Project", "Project")
@@ -457,9 +499,16 @@ namespace DataAccessLayer.Migrations
 
             modelBuilder.Entity("Entities.Concrete.AppUser", b =>
                 {
+                    b.Navigation("Projects");
+
                     b.Navigation("ReporterTasks");
 
                     b.Navigation("ResponsibleTasks");
+                });
+
+            modelBuilder.Entity("Entities.Concrete.Project", b =>
+                {
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("Entities.Concrete.Tag", b =>

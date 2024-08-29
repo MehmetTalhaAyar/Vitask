@@ -11,7 +11,7 @@ namespace Entities.Concrete
 
         public string Surname { get; set; }
 
-        public DateTime CreatedOn { get; set; } = DateTime.Now;
+        public DateTime CreatedOn { get; set; } = DateTime.Now.ToUniversalTime();
         
         public DateTime? UpdatedOn { get; set; }
 
@@ -19,5 +19,7 @@ namespace Entities.Concrete
 
         public virtual ICollection<Task> ReporterTasks { get; set; }
         public virtual ICollection<Task> ResponsibleTasks { get; set; }
+
+        public virtual ICollection<ProjectUser> Projects { get; set; }
     }
 }

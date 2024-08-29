@@ -2,6 +2,8 @@
 using Business.ValidationRules;
 using Entities.Concrete;
 using FluentValidation.Results;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Vitask.Controllers
@@ -9,21 +11,42 @@ namespace Vitask.Controllers
     public class ProjectController : Controller
     {
         private readonly IProjectService _projectService;
-        public ProjectController(IProjectService projectService)
+
+        private readonly UserManager<AppUser> _userService;
+
+        public ProjectController(IProjectService projectService, UserManager<AppUser> userManager)
         {
             _projectService = projectService;
+            _userService = userManager;
         }
-        public IActionResult Index()
+
+        [Authorize]
+        public async Task<IActionResult> Index()
         {
-            var values = _projectService.GetAll();
+            var user = await _userService.GetUserAsync(User);
+            
+            if(user == null)
+            {
+                return RedirectToAction("Index", "Login");
+            }
+
+            var values = _projectService.GetAllByUserId(user.Id);
+
+            // admin tüm projeleri görebilecek
+            //var values = _projectService.GetAll();
+
+
             return View(values);
         }
+
+        [Authorize]
         [HttpGet]
         public IActionResult AddProject()
         {
             return View();
         }
-        [HttpPost]
+		[Authorize]
+		[HttpPost]
         public IActionResult AddProject(Project project)
         {
             ProjectValidator validationRules = new ProjectValidator();
@@ -42,19 +65,23 @@ namespace Vitask.Controllers
             return View();
 
         }
-        public IActionResult DeleteProject(int id)
+
+		[Authorize]
+		public IActionResult DeleteProject(int id)
         {
             var value = _projectService.GetById(id);
             _projectService.Delete(value);
             return RedirectToAction("Index");
         }
-        [HttpGet]
+		[Authorize]
+		[HttpGet]
         public IActionResult EditProject(int id)
         {
             var value = _projectService.GetById(id);
             return View(value);
         }
-        [HttpPost]
+		[Authorize]
+		[HttpPost]
         public IActionResult EditProject(Project project)
         {
             ProjectValidator validationRules = new ProjectValidator();

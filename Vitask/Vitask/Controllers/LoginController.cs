@@ -72,7 +72,7 @@ namespace Vitask.Controllers
 
             if (result.Succeeded)
             {
-                return RedirectToAction("Index", "Dashboard");
+                return RedirectToAction("Index", "Login");
             }
             else
             {
@@ -83,6 +83,17 @@ namespace Vitask.Controllers
             }
 
             return View(signUpViewModel);
+        }
+
+
+
+        [Authorize]
+        public async Task<IActionResult> Logout()
+        {
+
+            await _signInService.SignOutAsync();
+            return RedirectToAction("Index", "Login");
+
         }
 
 

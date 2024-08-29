@@ -31,6 +31,11 @@ namespace Business.Concrete
             return _projectDal.GetById(id);
         }
 
+        public List<Project> GetAllByUserId(int userId)
+        {
+            return _projectDal.GetAllByUserId(userId);
+        }
+
         public void Insert(Project t)
         {
             _projectDal.Insert(t);

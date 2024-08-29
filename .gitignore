@@ -19,3 +19,5 @@ Vitask/Entities/obj/*
 Vitask/.vs/*
 
 Vitask/Vitask/wwwroot/adminmart-master/*
+
+Vitask/DataAccessLayer/Migrations/*

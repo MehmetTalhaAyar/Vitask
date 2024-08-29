@@ -20,6 +20,8 @@ namespace Entities.Concrete
 
         public virtual AppUser User { get; set; }
 
+        public virtual ICollection<ProjectUser> Users { get; set; }
+
 
 
 

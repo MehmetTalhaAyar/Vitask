@@ -166,12 +166,9 @@ namespace DataAccessLayer.Migrations
                     b.Property<DateTime?>("UpdatedOn")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("CommanderId");
 
                     b.ToTable("Projects");
                 });
@@ -383,13 +380,13 @@ namespace DataAccessLayer.Migrations
 
             modelBuilder.Entity("Entities.Concrete.Project", b =>
                 {
-                    b.HasOne("Entities.Concrete.AppUser", "User")
+                    b.HasOne("Entities.Concrete.AppUser", "Commander")
                         .WithMany()
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("CommanderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.Navigation("Commander");
                 });
 
             modelBuilder.Entity("Entities.Concrete.ProjectUser", b =>

@@ -10,7 +10,7 @@ namespace Entities.Concrete
 
         public string Description { get; set; }
 
-        public DateTime CreatedOn { get; set; } = DateTime.Now;
+        public DateTime CreatedOn { get; set; } = DateTime.Now.ToUniversalTime();
 
         public DateTime? UpdatedOn { get; set; }
 
@@ -18,7 +18,7 @@ namespace Entities.Concrete
 
         public int CommanderId { get; set; }
 
-        public virtual AppUser User { get; set; }
+        public virtual AppUser Commander { get; set; }
 
         public virtual ICollection<ProjectUser> Users { get; set; }
 

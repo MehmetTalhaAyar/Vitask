@@ -13,7 +13,7 @@ namespace Entities.Concrete
         public int DeletionStateCode { get; set; }
         public int Priority { get; set; } // 1-9 arasında değer alacak
         public DateTime DueDate { get; set; }
-        public DateTime CreatedOn { get; set; } = DateTime.Now;
+        public DateTime CreatedOn { get; set; } = DateTime.Now.ToUniversalTime();
         public DateTime? UpdatedOn { get; set; }
 
         public int ResponsibleId { get; set; }

@@ -35,13 +35,14 @@ namespace DataAccessLayer.Concrete
             }
         }
 
-        public void Insert(T t)
+        public T Insert(T t)
         {
             using(VitaskContext context = new VitaskContext())
             {
                 context.Add(t);
                 context.SaveChanges();
             }
+            return t;
         }
 
         public void Update(T t)

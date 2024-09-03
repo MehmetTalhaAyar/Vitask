@@ -7,11 +7,10 @@ using Entities.Concrete;
 
 namespace Business.Abstract
 {
-    public interface IProjectService : IGenericService<Project>
-    {
+	public interface IAppUserService
+	{
+		List<AppUser> GetUsersByKeyword(string keyword);
 
-        List<Project> GetAllByUserId(int userId);
-
-        
-    }
+		List<AppUser> GetAllUsers();
+	}
 }

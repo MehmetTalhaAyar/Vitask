@@ -10,7 +10,7 @@ namespace Business.Abstract
     {
         T GetById(int id);
 
-        void Insert(T t);
+        T Insert(T t);
 
         void Update(T t);
 

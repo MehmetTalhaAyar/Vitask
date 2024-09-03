@@ -7,5 +7,7 @@ namespace DataAccessLayer.Abstract
 		int GetTaskCountForUser(int UserId);
 
 		List<Task> GetAllByUserId(int UserId);
+
+		List<Task> GetAllByProjectId(int ProjectId);
 	}
 }

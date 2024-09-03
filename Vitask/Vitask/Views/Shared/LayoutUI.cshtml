@@ -16,7 +16,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <!-- Favicon icon -->
-    <link rel="icon" type="image/jpeg" sizes="16x16" href=""> // buraya vitalen logosu konulacak
+    <link rel="icon" type="image/jpeg" sizes="16x16" href=""> @* // buraya vitalen logosu konulacak *@
     <title>DashBoard - Vitask</title>
     <!-- Custom CSS -->
     <link href="~/adminmart-master/dist/css/style.min.css" rel="stylesheet">
@@ -26,6 +26,9 @@
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
+
+    @RenderSection("Styles",false)
+    
 </head>
 
 <body>
@@ -208,13 +211,9 @@
                             </a>
                         </li>
                     </ul>
-                    <!-- ============================================================== -->
-                    <!-- Right side toggle and nav items -->
-                    <!-- ============================================================== -->
+
                     <ul class="navbar-nav float-right">
-                        <!-- ============================================================== -->
-                        <!-- Search -->
-                        <!-- ============================================================== -->
+
                         <li class="nav-item d-none d-md-block">
                             <a class="nav-link" href="javascript:void(0)">
                                 <form>
@@ -226,16 +225,14 @@
                                 </form>
                             </a>
                         </li>
-                        <!-- ============================================================== -->
-                        <!-- User profile and search -->
-                        <!-- ============================================================== -->
+
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="javascript:void(0)" data-toggle="dropdown"
                                aria-haspopup="true" aria-expanded="false">
-                                <img src="assets/images/users/profile-pic.jpg" alt="user" class="rounded-circle"
+                                <img src="/assets/images/Godfather-Film-Afisi.jpg" alt="user" class="rounded-circle"
                                      width="40">
                                 <span class="ml-2 d-none d-lg-inline-block">
-                                    <span>Hello,</span> <span class="text-dark">Jason Doe</span> <i data-feather="chevron-down"
+                                    <span>Hello,</span> <span class="text-dark">Kral Kaan</span> <i data-feather="chevron-down"
                                                                                                     class="svg-icon"></i>
                                 </span>
                             </a>
@@ -276,19 +273,12 @@
                                 </div>
                             </div>
                         </li>
-                        <!-- ============================================================== -->
-                        <!-- User profile and search -->
-                        <!-- ============================================================== -->
+
                     </ul>
                 </div>
             </nav>
         </header>
-        <!-- ============================================================== -->
-        <!-- End Topbar header -->
-        <!-- ============================================================== -->
-        <!-- ============================================================== -->
-        <!-- Left Sidebar - style you can find in sidebar.scss  -->
-        <!-- ============================================================== -->
+
         <aside class="left-sidebar" data-sidebarbg="skin6">
             <!-- Sidebar scroll-->
             <div class="scroll-sidebar" data-sidebarbg="skin6">
@@ -296,7 +286,7 @@
                 <nav class="sidebar-nav">
                     <ul id="sidebarnav">
                         <li class="sidebar-item">
-                            <a class="sidebar-link sidebar-link" href="index.html"
+                            <a class="sidebar-link sidebar-link" href="/Dashboard/Index/"
                                aria-expanded="false">
                                 <i data-feather="home" class="feather-icon"></i><span class="hide-menu">Dashboard</span>
                             </a>
@@ -305,10 +295,10 @@
                         <li class="nav-small-cap"><span class="hide-menu">Applications</span></li>
 
                         <li class="sidebar-item">
-                            <a class="sidebar-link" href="ticket-list.html"
+                            <a class="sidebar-link" href="/Project/Index/"
                                aria-expanded="false">
-                                <i data-feather="tag" class="feather-icon"></i><span class="hide-menu">
-                                    Ticket List
+                                <i class="fas fa-folder"></i><span class="hide-menu">
+                                    Projects
                                 </span>
                             </a>
                         </li>
@@ -669,53 +659,23 @@
             </div>
             <!-- End Sidebar scroll-->
         </aside>
-        <!-- ============================================================== -->
-        <!-- End Left Sidebar - style you can find in sidebar.scss  -->
-        <!-- ============================================================== -->
-        <!-- ============================================================== -->
-        <!-- Page wrapper  -->
-        <!-- ============================================================== -->
+
         <div class="page-wrapper">
-            <!-- ============================================================== -->
-            <!-- Bread crumb and right sidebar toggle -->
-            <!-- ============================================================== -->
-            <!-- End Bread crumb and right sidebar toggle -->
-            <!-- ============================================================== -->
-            <!-- ============================================================== -->
-            <!-- Container fluid  -->
-            <!-- ============================================================== -->
+
             <div class="container-fluid">
-                <!-- ============================================================== -->
-                <!-- Start Page Content -->
-                <!-- ============================================================== -->
-                <!-- ============================================================== -->
+
                 <div>
                     @RenderBody()
                 </div>
 
-                <!-- End Container fluid  -->
-                <!-- ============================================================== -->
-                <!-- ============================================================== -->
-                <!-- footer -->
-                <!-- ============================================================== -->
                 <footer class="footer text-center text-muted">
                     All Rights Reserved by Adminmart. Designed and Developed by <a href="https://wrappixel.com">WrapPixel</a>.
                 </footer>
-                <!-- ============================================================== -->
-                <!-- End footer -->
-                <!-- ============================================================== -->
+
             </div>
-            <!-- ============================================================== -->
-            <!-- End Page wrapper  -->
-            <!-- ============================================================== -->
+
         </div>
-        <!-- ============================================================== -->
-        <!-- End Wrapper -->
-        <!-- ============================================================== -->
-        <!-- End Wrapper -->
-        <!-- ============================================================== -->
-        <!-- All Jquery -->
-        <!-- ============================================================== -->
+
         <script src="~/adminmart-master/assets/libs/jquery/dist/jquery.min.js"></script>
         <!-- Bootstrap tether Core JavaScript -->
         <script src="~/adminmart-master/assets/libs/popper.js/dist/umd/popper.min.js"></script>
@@ -733,9 +693,12 @@
         <script src="~/adminmart-master/dist/js/sidebarmenu.js"></script>
         <!--Custom JavaScript -->
         <script src="~/adminmart-master/dist/js/custom.min.js"></script>
+        
         <script type="text/javascript">
             $('.toast').toast('show');
         </script>
+
+        @RenderSection("Scripts",false)
 </body>
 
 </html>

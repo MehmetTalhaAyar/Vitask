@@ -6,12 +6,30 @@ using System.Threading.Tasks;
 using DataAccessLayer.Abstract;
 using DataAccessLayer.Context;
 using Entities.Concrete;
-using Microsoft.EntityFrameworkCore;
 
 namespace DataAccessLayer.Concrete
 {
-    public class ProjectUserDal : GenericRepository<ProjectUser>, IProjectUserDal
-    {
-        
-    }
+	public class ProjectUserDal : GenericRepository<ProjectUser>, IProjectUserDal
+	{
+		public void CreateProjectUserList(List<int> Ids, int ProjectId)
+		{
+			using(VitaskContext context = new VitaskContext())
+			{
+				foreach(var id in Ids)
+				{
+					ProjectUser user = new ProjectUser()
+					{
+						ProjectId = ProjectId,
+						UserId = id
+					};
+
+					context.Add(user);
+					
+					
+				}
+
+				context.SaveChanges();
+			}
+		}
+	}
 }

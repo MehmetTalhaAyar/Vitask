@@ -36,9 +36,9 @@ namespace Business.Concrete
             return _projectDal.GetAllByUserId(userId);
         }
 
-        public void Insert(Project t)
+        public Project Insert(Project t)
         {
-            _projectDal.Insert(t);
+            return _projectDal.Insert(t);
         }
 
         public void Update(Project t)

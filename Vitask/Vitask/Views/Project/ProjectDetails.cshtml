@@ -1,0 +1,158 @@
+﻿@using Vitask.Models
+@model AddTaskViewModel
+
+@{
+	ViewData["Title"] = "ProjectDetails";
+	Layout = "~/Views/Shared/LayoutUI.cshtml";
+	var Selects = ViewData["Selects"] as List<SelectListItemViewModel>;
+	var allTasks = ViewData["AllTasks"] as List<AllTaskViewModel>;
+	var tags = ViewData["Tags"] as List<AllTagsViewModel>;
+	var id = ViewData["id"];
+}
+
+<div class="form-group">
+	<button data-toggle="modal"
+			data-target="#signup-modal"
+			class="btn btn-rounded btn-outline-info">
+		Task Ekle
+	</button>
+</div>
+
+<div class="row">
+	<div class="col-12">
+		<div class="card">
+			<div class="card-body">
+				<h6 class="card-subtitle">
+					Project Tasks List
+				</h6>
+				<div class="table-responsive">
+					<table id="zero_config" class="table table-striped table-bordered no-wrap table-hover">
+						<thead>
+							<tr>
+								<th>Name</th>
+								<th>Description</th>
+								<th>Priority</th>
+								<th>Due Time</th>
+								<th>Responsible</th>
+								<th>Reporter</th>
+								<th>Tag</th>
+							</tr>
+						</thead>
+						<tbody>
+							@foreach (var item in allTasks)
+							{
+
+								<tr>
+									<td>@item.Name</td>
+									<td>@item.Description</td>
+									<td>@item.Priority</td>
+									<td>@item.DueTime</td>
+									<td>@item.Responsible</td>
+									<td>@item.Reporter</td>
+									<td><div class="rounded-pill text-primary border border-3 border-primary text-center">@item.Tag</div></td>
+								</tr>
+
+							}
+
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+
+<div id="signup-modal" class="modal fade" tabindex="-1" role="dialog"
+	 aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+
+			<div class="modal-body">
+				<div class="text-center mt-2 mb-4">
+					<a href="index.html" class="text-success">
+						<span>
+							<img class="mr-2" src="/assets/images/vitalen-bt-logo.png"
+								 alt="" height="18">
+						</span>
+					</a>
+				</div>
+
+				<form class="pl-3 pr-3" method="post">
+
+					<input type="hidden" value="@id" asp-for="ProjectId" />
+
+					<div class="form-group">
+						<label for="taskName">Task name</label>
+						<input class="form-control" type="text" asp-for="Name" id="taskName"
+							   required="">
+					</div>
+
+					<div class="form-group">
+						<label for="description">Description</label>
+						<input class="form-control" type="text" asp-for="Description" id="description"
+							   required="">
+					</div>
+
+					<div class="form-group">
+						<label for="priority">Priority</label>
+						<input class="form-control" type="number" asp-for="Priority" id="priority"
+							   required="">
+					</div>
+
+					<div class="form-group">
+						<label for="dueTime">Due Time</label>
+						<input class="form-control" type="date" asp-for="DueTime" id="dueTime"
+							   required="">
+					</div>
+
+
+					<div class="form-group">
+						<label for="userSelect">Task Responsible</label>
+						<select id="userSelect" class="form-control" asp-for="ResponsibleId">
+
+							@foreach (var user in Selects)
+							{
+								<option value="@user.id">@user.text</option>
+							}
+						</select>
+					</div>
+
+					<div class="form-group">
+						<label for="userSelect">Task Reporter</label>
+						<select id="userSelect" class="form-control" asp-for="ReporterId">
+
+							@foreach (var user in Selects)
+							{
+								<option value="@user.id">@user.text</option>
+							}
+						</select>
+					</div>
+
+					<div class="form-group">
+						<label for="userSelect">Tag</label>
+						<select id="userSelect" class="form-control" asp-for="TagId">
+
+							@foreach (var user in tags)
+							{
+								<option value="@user.Id">@user.Name</option>
+							}
+						</select>
+					</div>
+
+
+
+					<div class="form-group text-center">
+						<button class="btn btn-primary" type="submit">
+							Add new Task
+						</button>
+					</div>
+
+				</form>
+
+			</div>
+		</div>
+	</div>
+</div>

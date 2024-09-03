@@ -1,10 +1,20 @@
 ﻿@using Entities.Concrete
-@model List<Project>
-@
+@using Vitask.Models
+@model AddProjectViewModel
+
 @{
 	ViewData["Title"] = "Index";
 	Layout = "~/Views/Shared/LayoutUI.cshtml";
+	var ProjectList = ViewData["Projects"] as List<Project>;
+	var Selects = ViewData["Selects"] as List<SelectListItemViewModel>;
 }
+@section Styles {
+	<link href="
+		https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css
+						" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
+}
+
 
 <div class="form-group">
 
@@ -20,9 +30,9 @@
 <div class="col-12">
 	<div class="row">
 
-		@if (Model.Count != 0)
+		@if (ProjectList != null && ProjectList.Count != 0)
 		{
-			@foreach (var item in Model)
+			@foreach (var item in ProjectList)
 			{
 
 
@@ -32,12 +42,11 @@
 						<img class="card-img-top img-fluid" src="~/adminmart-master/assets/images/big/img1.jpg"
 							 alt="Card image cap">
 						<div class="card-body">
-							<h4 class="card-title">Card title</h4>
+							<h4 class="card-title">@item.Name</h4>
 							<p class="card-text">
-								Some quick example text to build on the card title and make
-								up the bulk of the card's content.
+								@item.Description
 							</p>
-							<a href="javascript:void(0)" class="btn btn-primary">Go somewhere</a>
+							<a href="/Project/ProjectDetails/@item.Id" class="btn btn-primary">Go Tasks</a>
 						</div>
 					</div>
 					<!-- Card -->
@@ -70,17 +79,40 @@
 
 					<div class="form-group">
 						<label for="projectName">Project Name</label>
-						<input class="form-control" type="text" id="projectName"
-							   required="" >
+						<input class="form-control" type="text" asp-for="Name" id="projectName"
+							   required="">
 					</div>
 
 					<div class="form-group">
 						<label for="description">Description</label>
-						<input class="form-control" type="text" id="description"
-							   required="" >
+						<input class="form-control" type="text" asp-for="Description" id="description"
+							   required="">
 					</div>
 
-					
+
+					<div class="form-group">
+						<label for="userSelectSingle">Project Leader</label>
+						<select id="userSelectSingle" class="form-select" data-placeholder="Choose a thing" asp-for="CommanderId">
+							<option value="">Select a user</option>
+							@foreach (var user in Selects)
+							{
+								<option value="@user.id">@user.text</option>
+							}
+						</select>
+					</div>
+
+					<div class="form-group">
+						<label for="userSelectMultiple">Project Users</label>
+						<select id="userSelectMultiple" class="form-select" asp-for="UserIds" data-placeholder="Choose anything" multiple="multiple">
+							<option value="">Select a user</option>
+							@foreach (var user in Selects)
+							{
+								<option value="@user.id">@user.text</option>
+							}
+						</select>
+					</div>
+
+
 
 					<div class="form-group text-center">
 						<button class="btn btn-primary" type="submit">
@@ -94,3 +126,85 @@
 		</div>
 	</div>
 </div>
+
+
+
+@section Scripts {
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+	<script src="
+		https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js
+							"></script>
+
+	<script>
+		$(document).ready(function () {
+			$('#userSelectSingle').select2({
+				theme: 'bootstrap-5',
+				placeholder: $(this).data('placeholder'),
+				width: '100%',
+				allowClear: true,
+				ajax: {
+					url: "/Project/SelectList",
+					dataType: 'json',
+					delay: 250,
+					data: function (params) {
+						return {
+							keyword: params.term,
+
+						};
+					},
+					processResults: function (data) {
+
+
+
+						return {
+							results: data,
+
+						};
+					},
+					cache: true
+				},
+			});
+
+
+
+			$('#userSelectMultiple').select2({
+				theme: 'bootstrap-5',
+				width: '100%',
+				allowClear: true,
+				closeOnSelect: false,
+				ajax: {
+					url: "/Project/SelectList",
+					dataType: 'json',
+					delay: 250,
+					data: function (params) {
+						return {
+							keyword: params.term,
+
+						};
+					},
+					processResults: function (data) {
+
+
+
+						return {
+							results: data,
+
+						};
+					},
+					cache: true
+				},
+				placeholder: 'Search for a repository',
+
+			}
+
+			);
+		});
+
+
+
+	</script>
+
+
+
+}

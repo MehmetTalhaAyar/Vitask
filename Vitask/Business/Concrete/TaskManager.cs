@@ -21,6 +21,11 @@ namespace Business.Concrete
             return _taskDal.GetAll();
         }
 
+		public List<Task> GetAllByProjectId(int ProjectId)
+		{
+			return _taskDal.GetAllByProjectId(ProjectId);
+		}
+
 		public List<Task> GetAllByUserId(int UserId)
 		{
 			return _taskDal.GetAllByUserId(UserId);
@@ -36,9 +41,9 @@ namespace Business.Concrete
             return _taskDal.GetTaskCountForUser(UserId);
 		}
 
-		public void Insert(Task t)
+		public Task Insert(Task t)
         {
-            _taskDal.Insert(t);
+            return _taskDal.Insert(t);
         }
 
         public void Update(Task t)

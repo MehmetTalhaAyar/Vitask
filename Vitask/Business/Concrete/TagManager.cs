@@ -32,9 +32,9 @@ namespace Business.Concrete
             return _tagDal.GetById(id);
         }
 
-        public void Insert(Tag t)
+        public Tag Insert(Tag t)
         {
-            _tagDal.Insert(t);
+            return _tagDal.Insert(t);
         }
 
         public void Update(Tag t)

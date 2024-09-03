@@ -14,7 +14,12 @@ namespace Business.Concrete
             _projectUserDal = projectUserDal;
         }
 
-        public void Delete(ProjectUser t)
+		public void CreateProjectUserList(List<int> Ids, int ProjectId)
+		{
+			_projectUserDal.CreateProjectUserList(Ids, ProjectId);
+		}
+
+		public void Delete(ProjectUser t)
         {
             _projectUserDal.Delete(t);
         }
@@ -29,9 +34,9 @@ namespace Business.Concrete
             return _projectUserDal.GetById(id);
         }
 
-        public void Insert(ProjectUser t)
+        public ProjectUser Insert(ProjectUser t)
         {
-            _projectUserDal.Insert(t);
+            return _projectUserDal.Insert(t);
         }
 
         public void Update(ProjectUser t)

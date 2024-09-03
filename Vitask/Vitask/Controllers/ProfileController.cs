@@ -1,4 +1,5 @@
 ﻿using Entities.Concrete;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Vitask.Models;
@@ -12,7 +13,9 @@ namespace Vitask.Controllers
         {
             _userService = userService;
         }
-        //Authorize eklenecek
+
+
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> Index(string userName)
         {

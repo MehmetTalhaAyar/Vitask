@@ -7,9 +7,12 @@ using Entities.Concrete;
 
 namespace DataAccessLayer.Abstract
 {
-    public interface IProjectUserDal : IGenericDal<ProjectUser>
-    {
+	public interface IAppUserDal
+	{
 
-		void CreateProjectUserList(List<int> Ids, int ProjectId);
+		List<AppUser> GetUsersByKeyword(string keyword);
+
+		List<AppUser> GetAllUsers();
+
 	}
 }

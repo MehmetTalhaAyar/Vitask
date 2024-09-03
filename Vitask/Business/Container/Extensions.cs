@@ -27,6 +27,9 @@ namespace Business.Container
 
             Services.AddScoped<IProjectUserDal, ProjectUserDal>();
             Services.AddScoped<IProjectUserService, ProjectUserManager>();
-        }
+
+			Services.AddScoped<IAppUserDal, AppUserDal>();
+			Services.AddScoped<IAppUserService, AppUserManager>();
+		}
     }
 }

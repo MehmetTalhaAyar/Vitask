@@ -13,7 +13,12 @@ namespace DataAccessLayer.Concrete
             using (VitaskContext context = new VitaskContext())
             {
 
-                var projectIds = context.Projects.Include(x => x.Users).Select(x => x.Users.Where(y=> y.UserId == userId).First()).ToList().Select(x => x.ProjectId);
+                var projectIds = context.Projects.Include(x => x.Users).Select(x => x.Users.Where(y=> y.UserId == userId).FirstOrDefault()).ToList().Where(x=> x!= null).Select(x => x.ProjectId);
+
+
+              
+                
+
 
                 var projects = context.Projects.Where(x => projectIds.Contains(x.Id)).ToList();
                 return projects;
@@ -22,5 +27,7 @@ namespace DataAccessLayer.Concrete
 
             }
         }
-    }
+
+		
+	}
 }

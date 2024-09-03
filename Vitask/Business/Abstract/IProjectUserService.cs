@@ -10,6 +10,6 @@ namespace Business.Abstract
     public interface IProjectUserService : IGenericService<ProjectUser>
     {
 
-        
+        void CreateProjectUserList(List<int> Ids, int ProjectId);
     }
 }

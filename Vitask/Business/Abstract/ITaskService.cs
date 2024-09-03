@@ -8,5 +8,7 @@ namespace Business.Abstract
 		int GetTaskCountForUser(int UserId);
 
 		List<Task> GetAllByUserId(int UserId);
+
+		List<Task> GetAllByProjectId(int ProjectId); // burada taskların en önce süresinin dolacağı düşünülerek gelecek
 	}
 }

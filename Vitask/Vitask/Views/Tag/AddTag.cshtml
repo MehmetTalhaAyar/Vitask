@@ -1,0 +1,21 @@
+﻿@model Entities.Concrete.Tag
+@{
+    ViewData["Title"] = "AddTag";
+    Layout = "~/Views/Shared/LayoutUI.cshtml";
+}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/Tag/Index">Tag</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Add Tag</li>
+    </ol>
+</nav>
+
+<form method="post" action="/Tag/AddTag">
+    <div class="input-group mb-3">
+        <div class="input-group-prepend">
+            <button class="btn btn-outline-primary" type="submit">Add</button>
+        </div>
+        <input type="text" class="form-control" name="Name" placeholder="Tag Name" aria-label="Tag Name" aria-describedby="basic-addon1">
+    </div>  
+</form>

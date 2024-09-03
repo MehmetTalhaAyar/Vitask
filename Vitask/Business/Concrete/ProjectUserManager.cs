@@ -34,7 +34,12 @@ namespace Business.Concrete
             return _projectUserDal.GetById(id);
         }
 
-        public ProjectUser Insert(ProjectUser t)
+		public List<int> GetUserIdByProject(int ProjectId)
+		{
+			return _projectUserDal.GetUserIdByProject(ProjectId);
+		}
+
+		public ProjectUser Insert(ProjectUser t)
         {
             return _projectUserDal.Insert(t);
         }
@@ -43,5 +48,10 @@ namespace Business.Concrete
         {
             _projectUserDal.Update(t);
         }
-    }
+
+		public void UpdateProjectUserList(List<int> Ids, int ProjectId)
+		{
+			_projectUserDal.UpdateProjectUserList(Ids, ProjectId);
+		}
+	}
 }

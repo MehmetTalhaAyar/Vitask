@@ -31,5 +31,47 @@ namespace DataAccessLayer.Concrete
 				context.SaveChanges();
 			}
 		}
+
+		public List<int> GetUserIdByProject(int ProjectId)
+		{
+			using(VitaskContext context = new VitaskContext())
+			{
+				return context.ProjectUsers.Where(x=> x.ProjectId == ProjectId).Select(x=>x.UserId).ToList();
+			}
+		}
+
+		public void UpdateProjectUserList(List<int> Ids, int ProjectId)
+		{
+			using(VitaskContext context = new VitaskContext())
+			{
+				var deletedProjectUsers = context.ProjectUsers.Where(x=> x.ProjectId == ProjectId && !Ids.Contains(x.UserId)).ToList();
+
+				var users = context.ProjectUsers.Where(x=> x.ProjectId == ProjectId && Ids.Contains(x.UserId)).Select(x=>x.UserId).ToList();
+
+				foreach(var userId in Ids)
+				{
+					if (!users.Contains(userId))
+					{
+						ProjectUser projectUser = new ProjectUser()
+						{
+							ProjectId = ProjectId,
+							UserId = userId
+						};
+
+						context.Add(projectUser);
+						context.SaveChanges();
+
+					}
+				}
+
+				foreach(var projectUser in deletedProjectUsers)
+				{
+					context.Remove(projectUser);
+					context.SaveChanges();
+				}
+
+				
+			}
+		}
 	}
 }

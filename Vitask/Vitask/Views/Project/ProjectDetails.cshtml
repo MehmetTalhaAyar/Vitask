@@ -8,6 +8,9 @@
 	var allTasks = ViewData["AllTasks"] as List<AllTaskViewModel>;
 	var tags = ViewData["Tags"] as List<AllTagsViewModel>;
 	var id = ViewData["id"];
+	var pageInfo = ViewData["PageInfo"] as PageInfoModel;
+
+
 }
 
 <div class="form-group">
@@ -55,9 +58,29 @@
 							}
 
 						</tbody>
+						
 					</table>
 				</div>
 			</div>
+			<div class="card-footer d-flex justify-content-end">
+				
+				
+				<div class="btn-group" role="group">
+					@if(pageInfo.CurrentPage != 1)
+					{
+						<a href="/Project/ProjectDetails/@id?page=@(pageInfo.CurrentPage-1)" class="btn btn-outline-primary">Önceki sayfa</a>
+					}
+					@for(int i = 1; i <= pageInfo.PageCount; i++)
+					{
+						<a href="/Project/ProjectDetails/@id?page=@i" class="btn btn-outline-primary">@i</a>
+					}
+					@if (pageInfo.CurrentPage != pageInfo.PageCount && pageInfo.PageCount != 0)
+					{
+						<a href="/Project/ProjectDetails/@id?page=@(pageInfo.CurrentPage+1)" class="btn btn-outline-primary">Sonraki Sayfa</a>
+					}
+				</div>
+			</div>
+
 		</div>
 	</div>
 </div>

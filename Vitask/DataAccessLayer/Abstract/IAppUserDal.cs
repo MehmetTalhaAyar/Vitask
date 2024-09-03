@@ -14,5 +14,7 @@ namespace DataAccessLayer.Abstract
 
 		List<AppUser> GetAllUsers();
 
+		AppUser GetById(int id);
+
 	}
 }

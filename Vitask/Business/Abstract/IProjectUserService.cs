@@ -11,5 +11,9 @@ namespace Business.Abstract
     {
 
         void CreateProjectUserList(List<int> Ids, int ProjectId);
+
+        List<int> GetUserIdByProject(int ProjectId);
+
+        void UpdateProjectUserList(List<int> Ids, int ProjectId);
     }
 }

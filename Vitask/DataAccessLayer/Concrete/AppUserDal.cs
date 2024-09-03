@@ -19,13 +19,21 @@ namespace DataAccessLayer.Concrete
 			}
 		}
 
+		public AppUser GetById(int id)
+		{
+			using(VitaskContext context = new VitaskContext())
+			{
+				return context.Users.Where(x => x.Id == id).FirstOrDefault();
+			}
+		}
+
 		public List<AppUser> GetUsersByKeyword(string keyword)
 		{
 
 			var value = keyword != null ? keyword : "";
 			using (VitaskContext context = new VitaskContext())
 			{
-				return context.Users.Where(x => x.UserName.Contains(value)).Take(5).ToList();
+				return context.Users.Where(x => x.UserName.ToLower().Contains(value.ToLower())).Take(5).ToList();
 			}
 		}
 	}

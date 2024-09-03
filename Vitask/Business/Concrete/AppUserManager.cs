@@ -23,6 +23,11 @@ namespace Business.Concrete
 			return _appUserDal.GetAllUsers();
 		}
 
+		public AppUser GetById(int id)
+		{
+			return _appUserDal.GetById(id);
+		}
+
 		public List<AppUser> GetUsersByKeyword(string keyword)
 		{
 			return _appUserDal.GetUsersByKeyword(keyword);

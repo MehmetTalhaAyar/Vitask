@@ -8,6 +8,8 @@ namespace DataAccessLayer.Abstract
 
 		List<Task> GetAllByUserId(int UserId);
 
-		List<Task> GetAllByProjectId(int ProjectId);
+		List<Task> GetAllByProjectId(int ProjectId,int page);
+
+		int GetPageCount(int ProjectId);
 	}
 }

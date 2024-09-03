@@ -45,13 +45,13 @@ namespace Vitask.Controllers
 
             var values = _projectService.GetAllByUserId(user.Id);
 
-			// admin tüm projeleri görebilecek
-			//var values = _projectService.GetAll();
+            // admin tüm projeleri görebilecek
+            //var values = _projectService.GetAll();
+
 			
             
             ViewData["Projects"] = values;
             ViewData["Selects"] = SelectList(null);
-
 
             return View();
         }
@@ -68,6 +68,8 @@ namespace Vitask.Controllers
                 CommanderId = addProjectViewModel.CommanderId,
             }; // project create
 
+            // buraya fluent validation eklenecek
+
 
             var NewProject = _projectService.Insert(project);
 
@@ -78,12 +80,18 @@ namespace Vitask.Controllers
 
 
 		[Authorize]
-		public IActionResult ProjectDetails(int id)
+		public IActionResult ProjectDetails(int id,int page = 1)
 		{
+            var pageCount = _taskService.GetPageCount(id);
 
-			var tasks = _taskService.GetAllByProjectId(id);
+			if (page < 1 || page > pageCount)
+				page = 1;
+
+			var tasks = _taskService.GetAllByProjectId(id,page);
             List<AllTaskViewModel> allTasks = new List<AllTaskViewModel>();
             List<AllTagsViewModel> allTags = new List<AllTagsViewModel>();
+
+            
 
             foreach(var task in tasks)
             {
@@ -108,13 +116,20 @@ namespace Vitask.Controllers
                 allTags.Add(allTagsViewModel);
             } //alltags create
 
+            PageInfoModel pageInfo = new PageInfoModel()
+            {
+                CurrentPage = page,
+                PageCount = pageCount
+            };
 
             ViewData["AllTasks"] = allTasks;
             ViewData["Selects"] = SelectList(null);
             ViewData["Tags"] = allTags;
             ViewData["id"] = id;
+            ViewData["PageInfo"] = pageInfo;
 
-            
+
+
 
 
 
@@ -142,61 +157,16 @@ namespace Vitask.Controllers
                 
             }; // task create
 
-            // şu araya fluent validation eklenebilir
+            // buraya fluent validation eklenecek
 
             _taskService.Insert(task);
 
-            return RedirectToAction("ProjectDetails","Project", new { id = addTaskViewModel.ProjectId });
-
-
-
-
-            // validation kontrolü yapıldıktan sonra ihtiyac olacak
-
-
-
-
-            return View();
-        }
-
-
-
-
-
-
-
-		[Authorize]
-        [HttpGet]
-        public IActionResult AddProject()
-        {
-            return View();
+            return RedirectToAction("ProjectDetails", "Project", new { id = addTaskViewModel.ProjectId });
         }
 
 
 		[Authorize]
-		[HttpPost]
-        public IActionResult AddProject(Project project)
-        {
-            ProjectValidator validationRules = new ProjectValidator();
-            ValidationResult result = validationRules.Validate(project); 
-            if (result.IsValid)
-            {
-                _projectService.Insert(project);
-                return RedirectToAction("Index");
-            }
-            else
-            {
-                foreach (var item in result.Errors)
-                {
-                    ModelState.AddModelError(item.PropertyName, item.ErrorMessage);
-                }
-            }
-            return View();
-
-        }
-
-		[Authorize]
-		public IActionResult DeleteProject(int id)
+		public IActionResult DeleteProject(int id) // burası soft delete işlemine çevrilecek
         {
             var value = _projectService.GetById(id);
             _projectService.Delete(value);
@@ -209,18 +179,44 @@ namespace Vitask.Controllers
         public IActionResult EditProject(int id)
         {
             var value = _projectService.GetById(id);
-            return View(value);
+
+            UpdateProjectViewModel updateProjectViewModel = new UpdateProjectViewModel()
+            {
+                Id = value.Id,
+                Name = value.Name,
+                Description = value.Description,
+                CommanderId = value.CommanderId,
+                UserIds = _projectUserService.GetUserIdByProject(value.Id)
+            };
+
+
+            ViewData["Selects"] = SelectList(null, updateProjectViewModel.UserIds);
+
+
+            return View(updateProjectViewModel);
         }
 
 		[Authorize]
 		[HttpPost]
-        public IActionResult EditProject(Project project)
+        public IActionResult EditProject(UpdateProjectViewModel updateProjectViewModel)
         {
-            ProjectValidator validationRules = new ProjectValidator();
+
+
+			Project project = new Project()
+			{
+                Id = updateProjectViewModel.Id,
+				Name = updateProjectViewModel.Name,
+				Description = updateProjectViewModel.Description,
+				CommanderId = updateProjectViewModel.CommanderId,
+			};
+
+			ProjectValidator validationRules = new ProjectValidator();
             ValidationResult result = validationRules.Validate(project);
             if (result.IsValid)
             {
                 _projectService.Update(project);
+                _projectUserService.UpdateProjectUserList(updateProjectViewModel.UserIds, project.Id);
+
                 return RedirectToAction("Index");
             }
             else
@@ -235,13 +231,38 @@ namespace Vitask.Controllers
         }
 
 
-		public List<SelectListItemViewModel> SelectList(string keyword)
+		public List<SelectListItemViewModel> SelectList(string keyword,List<int>? selectedUsers = null)
 		{
-			return _appUserService.GetUsersByKeyword(keyword).Select(x => new SelectListItemViewModel()
+            var selectList = _appUserService.GetUsersByKeyword(keyword).Select(x => new SelectListItemViewModel()
 			{
 				id = x.Id,
 				text = x.UserName
 			}).ToList();
+
+            if (selectedUsers != null)
+            {
+                var selectListIds = selectList.Select(x => x.id).ToList();
+                var goingtoadds = selectedUsers.Where(x => !selectListIds.Contains(x));
+
+                foreach (var item in goingtoadds)
+                {
+                    var user = _appUserService.GetById(item);
+                    if (user != null)
+                    {
+                        SelectListItemViewModel selectListItemViewModel = new SelectListItemViewModel()
+                        {
+                            id = user.Id,
+                            text = user.UserName
+                        };
+                        selectList.Add(selectListItemViewModel);
+                    }
+                }
+            }
+
+
+
+
+            return selectList;
 
 
 		}

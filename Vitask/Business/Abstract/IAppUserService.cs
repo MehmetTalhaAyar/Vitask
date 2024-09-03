@@ -12,5 +12,7 @@ namespace Business.Abstract
 		List<AppUser> GetUsersByKeyword(string keyword);
 
 		List<AppUser> GetAllUsers();
+
+		AppUser GetById(int id);
 	}
 }

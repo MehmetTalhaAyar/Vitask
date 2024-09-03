@@ -12,7 +12,7 @@ namespace DataAccessLayer.Concrete
 {
 	public class TaskDal : GenericRepository<Task>, ITaskDal
 	{
-		public List<Task> GetAllByProjectId(int ProjectId)
+		public List<Task> GetAllByProjectId(int ProjectId, int page)
 		{
 			using(VitaskContext context = new VitaskContext())
 			{
@@ -21,7 +21,7 @@ namespace DataAccessLayer.Concrete
 					.Include(x => x.Reporter)
 					.Include(x => x.Tag)
 					.OrderBy(x=>x.DueDate)
-					.Where(x=> x.ProjectId == ProjectId).ToList();
+					.Where(x=> x.ProjectId == ProjectId).Skip((page-1) * 10).Take(10).ToList();
 			}
 		}
 
@@ -30,6 +30,15 @@ namespace DataAccessLayer.Concrete
 			using (VitaskContext context = new VitaskContext())
 			{
 				return context.Tasks.Where(x => x.ResponsibleId == UserId).ToList();
+			}
+		}
+
+		public int GetPageCount(int ProjectId)
+		{
+			using(VitaskContext context = new VitaskContext())
+			{
+				double pageCount = ((double)context.Tasks.Where(x => x.ProjectId == ProjectId).Count() / 10);
+				return (int)Math.Ceiling(pageCount);
 			}
 		}
 

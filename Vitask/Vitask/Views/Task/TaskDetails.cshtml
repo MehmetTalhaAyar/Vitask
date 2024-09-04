@@ -1,120 +1,115 @@
-﻿@using Vitask.Models
-@model AddTaskViewModel
-
+﻿@using Business.Models
+@model UpdateTaskViewModel
 @{
-	ViewData["Title"] = "ProjectDetails";
+	ViewData["Title"] = "TaskDetails";
 	Layout = "~/Views/Shared/LayoutUI.cshtml";
 	var Selects = ViewData["Selects"] as List<SelectListItemViewModel>;
-	var allTasks = ViewData["AllTasks"] as List<AllTaskViewModel>;
 	var tags = ViewData["Tags"] as List<AllTagsViewModel>;
-	var id = ViewData["id"];
-	var pageInfo = ViewData["PageInfo"] as PageInfoModel;
+	var task = ViewData["TaskModel"] as TaskViewModel;
 
 
 }
-
-
 @section Styles {
 	<link href="
 		https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css
-												" rel="stylesheet">
+													" rel="stylesheet">
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
 }
 
-
 <nav aria-label="breadcrumb">
 	<ol class="breadcrumb">
-		<li class="breadcrumb-item"><a href="/Project/Index">Project</a></li>
-		<li class="breadcrumb-item active" aria-current="page">Project Details</li>
+		<li class="breadcrumb-item"><a href="/Task/Index">Task</a></li>
+		<li class="breadcrumb-item active" aria-current="page">Task Details</li>
 	</ol>
 </nav>
 
-<div class="form-group">
-	<button data-toggle="modal"
-			data-target="#signup-modal"
-			class="btn btn-rounded btn-outline-info">
-		Add Task
-	</button>
-</div>
+<div class="d-flex">
 
-<div class="row">
-	<div class="col-12">
-		<div class="card">
-			<div class="card-body">
-				<h6 class="card-subtitle">
-					Project Tasks List
-				</h6>
-				<div class="table-responsive">
-					<table id="zero_config" class="table table-striped table-bordered no-wrap table-hover">
-						<thead>
-							<tr>
-								<th>Name</th>
-								<th>Description</th>
-								<th>Priority</th>
-								<th>Due Time</th>
-								<th>Responsible</th>
-								<th>Reporter</th>
-								<th>Tag</th>
-								
-							</tr>
-						</thead>
-						<tbody>
-							@foreach (var item in allTasks)
-							{
 
-								<tr onclick="redirectToUrl(this)" data-id="@item.Id" style="cursor:pointer;">
-									<td>@item.Name</td>
-									<td>@item.Description</td>
-									<td>@item.Priority</td>
-									<td>@item.DueTime</td>
-									<td>@item.Responsible</td>
-									<td>@item.Reporter</td>
-									<td><div class="rounded-pill text-primary border border-3 border-primary text-center">@item.Tag</div></td>
-								</tr>
+	<div class="col-8 flex-column">
 
-							}
 
-						</tbody>
 
-					</table>
-				</div>
+		<div class="form-group">
+
+			<h1>
+				@task.Name
+			</h1>
+			<div class="form-group">
+				<h4>
+					@task.Description
+				</h4>
 			</div>
-			<div class="card-footer d-flex justify-content-end">
-
-
-				<div class="btn-group" role="group">
-					@if (pageInfo.CurrentPage != 1)
-					{
-						<a href="/Project/ProjectDetails/@id?page=@(pageInfo.CurrentPage-1)" class="btn btn-outline-primary">Previous Page</a>
-					}
-					@for (int i = 1; i <= pageInfo.PageCount; i++)
-					{
-						@if(pageInfo.CurrentPage == i)
-						{
-							<a href="/Project/ProjectDetails/@id?page=@i" class="btn btn-primary">@i</a>
-
-						}
-						else
-						{
-							
-						<a href="/Project/ProjectDetails/@id?page=@i" class="btn btn-outline-primary">@i</a>
-						}
-					}
-					@if (pageInfo.CurrentPage != pageInfo.PageCount && pageInfo.PageCount != 0)
-					{
-						<a href="/Project/ProjectDetails/@id?page=@(pageInfo.CurrentPage+1)" class="btn btn-outline-primary">Next Page</a>
-					}
-				</div>
-			</div>
-
 		</div>
+
+
+		<div class="form-group">
+			@*
+			gelecekteki comment yeri olabilir eklenirse
+			*@
+		</div>
+
 	</div>
+	<div class="col-4 flex-column">
+		@* burasi yan tarafta kalan küçük alanın başlangıcı*@
+
+
+		<div class="form-group d-flex justify-content-between text-center align-items-center">
+			<span>Task Responsible</span>
+			<span class="w-50">
+				@task.ResponsibleId.Username
+			</span>
+		</div>
+
+		<div class="form-group d-flex justify-content-between text-center align-items-center">
+
+			<span>Task Reporter</span>
+			<span class="w-50">
+				@task.ReporterId.Username
+			</span>
+		</div>
+
+		<div class="form-group d-flex justify-content-between text-center align-items-center">
+			<span>Due time</span>
+			<span class="w-50">@task.DueTime</span>
+		</div>
+
+		<div class="form-group d-flex justify-content-between text-center">
+			<span>Created On</span>
+			<span class="w-50">@task.CreatedOn</span>
+		</div>
+
+
+		<div class="form-group d-flex justify-content-between text-center align-items-center">
+
+			<span>Tags</span>
+			<span class="w-50">@task.Tag.Name</span>
+		</div>
+
+		<div class="form-group d-flex justify-content-between text-center align-items-center">
+			<span>Project Name</span>
+			<a href="/Project/ProjectDetails/@task.Project.Id" class="btn btn-light w-50">@task.Project.Name</a>
+		</div>
+
+		<div class="form-group d-flex justify-content-center text-center align-items-center">
+
+			<button data-toggle="modal"
+					data-target="#taskupdate-modal" class="btn btn-success w-50">
+				Update Task
+			</button>
+		</div>
+
+
+
+
+
+	</div>
+
+
 </div>
 
 
-
-
-<div id="signup-modal" class="modal fade" tabindex="-1" role="dialog"
+<div id="taskupdate-modal" class="modal fade" tabindex="-1" role="dialog"
 	 aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
@@ -131,7 +126,8 @@
 
 				<form class="pl-3 pr-3" method="post">
 
-					<input type="hidden" value="@id" asp-for="ProjectId" />
+					<input type="hidden" asp-for="Id" />
+					@* <input type="hidden" asp-for="ProjectId" /> *@
 
 					<div class="form-group">
 						<label for="taskName">Task name</label>
@@ -195,9 +191,11 @@
 
 					<div class="form-group text-center">
 						<button class="btn btn-primary" type="submit">
-							Add new Task
+							UpdateTask
 						</button>
 					</div>
+
+
 
 				</form>
 
@@ -207,20 +205,53 @@
 </div>
 
 
+
+
+
+
+
+
+
+
 @section Scripts {
 
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 	<script src="
 		https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js
-													"></script>
+																		"></script>
 
 	<script>
+		// select2 için dinamik bir şekilde kullanıcıları getirme
+
 		$(document).ready(function () {
 			$('#userSelectResponsible').select2({
 				theme: 'bootstrap-5',
 				placeholder: $(this).data('placeholder'),
 				width: '100%',
-				allowClear: true,
+				ajax: {
+					url: "/Project/SelectList",
+					dataType: 'json',
+					delay: 250,
+					data: function (params) {
+						return {
+							keyword: params.term,
+						};
+					},
+					processResults: function (data) {
+						return {
+							results: data,
+
+						};
+					},
+					cache: true
+				},
+			});
+
+
+			$('#userSelectReporter').select2({
+				theme: 'bootstrap-5',
+				placeholder: $(this).data('placeholder'),
+				width: '100%',
 				ajax: {
 					url: "/Project/SelectList",
 					dataType: 'json',
@@ -232,9 +263,6 @@
 						};
 					},
 					processResults: function (data) {
-
-
-
 						return {
 							results: data,
 
@@ -245,59 +273,14 @@
 			});
 
 
-				$('#userSelectReporter').select2({
-					theme: 'bootstrap-5',
-					placeholder: $(this).data('placeholder'),
-					width: '100%',
-					allowClear: true,
-					ajax: {
-						url: "/Project/SelectList",
-						dataType: 'json',
-						delay: 250,
-						data: function (params) {
-							return {
-								keyword: params.term,
 
-							};
-						},
-						processResults: function (data) {
-
-
-
-							return {
-								results: data,
-
-							};
-						},
-						cache: true
-					},
-				});
-
-
-
-				});
+		});
 
 
 
 	</script>
 
-	<script> // tr etiketinin task detay sayfasına yönlendirmesi için
-
-
-
-		function redirectToUrl(element) {
-
-			var id = element.getAttribute('data-id');
-			var url = '/Task/TaskDetails/' + id;
-
-			// Tarayıcıda yönlendirme
-			window.location.href = url;
-		}
-
-
-
-
-	</script>
+	
 
 
 

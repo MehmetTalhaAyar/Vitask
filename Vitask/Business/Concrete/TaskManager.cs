@@ -31,6 +31,11 @@ namespace Business.Concrete
 			return _taskDal.GetAllByUserId(UserId);
 		}
 
+		public List<Task> GetAllByResponsibleId(int UserId, int page)
+		{
+			return _taskDal.GetAllByResponsibleId(UserId, page);
+		}
+
 		public Task GetById(int id)
         {
             return _taskDal.GetById(id);
@@ -39,6 +44,11 @@ namespace Business.Concrete
 		public int GetPageCount(int ProjectId)
 		{
             return _taskDal.GetPageCount(ProjectId);
+		}
+
+		public int GetPageCountByUserId(int UserId)
+		{
+			return _taskDal.GetPageCountByUserId(UserId);
 		}
 
 		public int GetTaskCountForUser(int UserId)
@@ -54,6 +64,11 @@ namespace Business.Concrete
         public void Update(Task t)
         {
             _taskDal.Update(t);
+        }
+
+        public Task GetTaskWithRelations(int id)
+        {
+            return _taskDal.GetTaskWithRelations(id);
         }
     }
 }

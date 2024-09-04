@@ -12,5 +12,11 @@ namespace Business.Abstract
 		List<Task> GetAllByProjectId(int ProjectId,int Page); // burada taskların en önce süresinin dolacağı düşünülerek geliyor
 
 		int GetPageCount(int ProjectId);
-	}
+
+		int GetPageCountByUserId(int UserId);
+
+		List<Task> GetAllByResponsibleId(int UserId, int page); // burada taskların en önce süresinin dolacağı düşünülerek geliyor.
+
+        Task GetTaskWithRelations(int id);
+    }
 }

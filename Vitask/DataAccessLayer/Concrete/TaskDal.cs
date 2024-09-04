@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DataAccessLayer.Abstract;
 using DataAccessLayer.Context;
+using Entities.Concrete;
 using Microsoft.EntityFrameworkCore;
 using Task = Entities.Concrete.Task;
 
@@ -20,8 +21,9 @@ namespace DataAccessLayer.Concrete
 					.Include(x => x.Responsible)
 					.Include(x => x.Reporter)
 					.Include(x => x.Tag)
-					.OrderBy(x=>x.DueDate)
-					.Where(x=> x.ProjectId == ProjectId).Skip((page-1) * 10).Take(10).ToList();
+					.Where(x=> x.ProjectId == ProjectId)
+					.OrderBy(x => x.DueDate)
+					.Skip((page-1) * 10).Take(10).ToList();
 			}
 		}
 
@@ -30,6 +32,21 @@ namespace DataAccessLayer.Concrete
 			using (VitaskContext context = new VitaskContext())
 			{
 				return context.Tasks.Where(x => x.ResponsibleId == UserId).ToList();
+			}
+		}
+
+		public List<Task> GetAllByResponsibleId(int UserId, int page)
+		{
+			using (VitaskContext context = new VitaskContext())
+			{
+				return context.Tasks
+					.Include(x => x.Responsible)
+					.Include(x => x.Reporter)
+					.Include(x => x.Tag)
+					.Include(x => x.Project)
+					.Where(x => x.ResponsibleId == UserId)
+					.OrderBy(x => x.DueDate)
+					.Skip((page - 1) * 10).Take(10).ToList();
 			}
 		}
 
@@ -42,6 +59,16 @@ namespace DataAccessLayer.Concrete
 			}
 		}
 
+		public int GetPageCountByUserId(int UserId)
+		{
+			using(var context = new VitaskContext())
+			{
+				double pageCount = ((double)context.Tasks.Where(x => x.ResponsibleId == UserId).Count() / 10);
+				return (int) Math.Ceiling(pageCount);
+			}
+		}
+
+
 		public int GetTaskCountForUser(int UserId)
 		{
 			using(VitaskContext context = new VitaskContext())
@@ -49,5 +76,19 @@ namespace DataAccessLayer.Concrete
 				return context.Tasks.Where(x => x.ResponsibleId == UserId).Count();
 			}
 		}
-	}
+
+        public Task GetTaskWithRelations(int id)
+        {
+            using(VitaskContext context = new VitaskContext())
+			{
+				return context.Tasks
+					.Include(x => x.Responsible)
+					.Include(x => x.Reporter)
+					.Include(x => x.Tag)
+					.Include(x => x.Project)
+					.Where(x => x.Id == id).FirstOrDefault();
+
+            }
+        }
+    }
 }

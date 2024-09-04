@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Business.Abstract;
 using DataAccessLayer.Abstract;
 using Entities.Concrete;
+using Vitask.Models;
 
 namespace Business.Concrete
 {
@@ -37,5 +38,35 @@ namespace Business.Concrete
 		{
 			_appUserDal.Delete(id);
 		}
-	}
+
+        public List<SelectListItemViewModel> SelectList(string keyword, List<int>? selectedUsers = null)
+        {
+            var selectList = GetUsersByKeyword(keyword).Select(x => new SelectListItemViewModel()
+            {
+                id = x.Id,
+                text = x.UserName
+            }).ToList();
+
+            if (selectedUsers != null)
+            {
+                var selectListIds = selectList.Select(x => x.id).ToList();
+                var goingtoadds = selectedUsers.Where(x => !selectListIds.Contains(x));
+
+                foreach (var item in goingtoadds)
+                {
+                    var user = GetById(item);
+                    if (user != null)
+                    {
+                        SelectListItemViewModel selectListItemViewModel = new SelectListItemViewModel()
+                        {
+                            id = user.Id,
+                            text = user.UserName
+                        };
+                        selectList.Add(selectListItemViewModel);
+                    }
+                }
+            }
+            return selectList;
+        }
+    }
 }

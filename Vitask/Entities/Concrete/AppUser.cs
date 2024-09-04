@@ -21,5 +21,6 @@ namespace Entities.Concrete
         public virtual ICollection<Task> ResponsibleTasks { get; set; }
 
         public virtual ICollection<ProjectUser> Projects { get; set; }
+
     }
 }

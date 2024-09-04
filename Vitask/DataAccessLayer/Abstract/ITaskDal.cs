@@ -12,5 +12,11 @@ namespace DataAccessLayer.Abstract
 
 		int GetPageCount(int ProjectId);
 
+		int GetPageCountByUserId(int UserId);
+
+		List<Task> GetAllByResponsibleId(int UserId, int page);
+
+		Task GetTaskWithRelations(int id);
+
 	}
 }

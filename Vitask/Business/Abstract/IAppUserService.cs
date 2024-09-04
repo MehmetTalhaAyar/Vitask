@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Entities.Concrete;
+using Vitask.Models;
 
 namespace Business.Abstract
 {
@@ -16,5 +17,8 @@ namespace Business.Abstract
 		AppUser GetById(int id);
 
 		void Delete(int id);
-	}
+
+		public List<SelectListItemViewModel> SelectList(string keyword, List<int>? selectedUsers = null);
+
+    }
 }

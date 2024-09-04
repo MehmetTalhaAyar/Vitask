@@ -5,8 +5,8 @@ using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Vitask.Models;
 using Task = Entities.Concrete.Task;
+using Vitask.Models;
 namespace Vitask.Controllers
 {
     public class ProjectController : Controller
@@ -51,7 +51,7 @@ namespace Vitask.Controllers
 			
             
             ViewData["Projects"] = values;
-            ViewData["Selects"] = SelectList(null);
+            ViewData["Selects"] = _appUserService.SelectList(null);
 
             return View();
         }
@@ -103,6 +103,7 @@ namespace Vitask.Controllers
                 taskViewModel.Name = task.Name;
                 taskViewModel.Description = task.Description;
                 taskViewModel.Tag = task.Tag.Name;
+                taskViewModel.Id = task.Id;
 
                 allTasks.Add(taskViewModel);
             } // allTasks create
@@ -123,7 +124,7 @@ namespace Vitask.Controllers
             };
 
             ViewData["AllTasks"] = allTasks;
-            ViewData["Selects"] = SelectList(null);
+            ViewData["Selects"] = _appUserService.SelectList(null);
             ViewData["Tags"] = allTags;
             ViewData["id"] = id;
             ViewData["PageInfo"] = pageInfo;
@@ -190,7 +191,7 @@ namespace Vitask.Controllers
             };
 
 
-            ViewData["Selects"] = SelectList(null, updateProjectViewModel.UserIds);
+            ViewData["Selects"] = _appUserService.SelectList(null, updateProjectViewModel.UserIds);
 
 
             return View(updateProjectViewModel);
@@ -232,40 +233,13 @@ namespace Vitask.Controllers
         }
 
 
-		public List<SelectListItemViewModel> SelectList(string keyword,List<int>? selectedUsers = null)
-		{
-            var selectList = _appUserService.GetUsersByKeyword(keyword).Select(x => new SelectListItemViewModel()
-			{
-				id = x.Id,
-				text = x.UserName
-			}).ToList();
 
-            if (selectedUsers != null)
-            {
-                var selectListIds = selectList.Select(x => x.id).ToList();
-                var goingtoadds = selectedUsers.Where(x => !selectListIds.Contains(x));
-
-                foreach (var item in goingtoadds)
-                {
-                    var user = _appUserService.GetById(item);
-                    if (user != null)
-                    {
-                        SelectListItemViewModel selectListItemViewModel = new SelectListItemViewModel()
-                        {
-                            id = user.Id,
-                            text = user.UserName
-                        };
-                        selectList.Add(selectListItemViewModel);
-                    }
-                }
-            }
-
-
-
-
-            return selectList;
-
+        // burayı silemedik çünkü ajax ile buraya istek atılıyor 
+        // appUserControler gibi bir yapı kurulursa oraya taşınması gerekiyor
+        public List<SelectListItemViewModel> SelectList(string keyword, List<int>? selectedUsers = null)
+        {
+            return _appUserService.SelectList(keyword, selectedUsers);
+        }
 
 		}
-	}
 }

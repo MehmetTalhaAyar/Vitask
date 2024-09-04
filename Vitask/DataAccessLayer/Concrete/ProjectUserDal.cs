@@ -31,7 +31,7 @@ namespace DataAccessLayer.Concrete
 				context.SaveChanges();
 			}
 		}
-
+		
 		public List<int> GetUserIdByProject(int ProjectId)
 		{
 			using(VitaskContext context = new VitaskContext())

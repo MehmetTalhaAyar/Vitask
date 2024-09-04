@@ -14,5 +14,7 @@ namespace Business.Abstract
 		List<AppUser> GetAllUsers();
 
 		AppUser GetById(int id);
+
+		void Delete(int id);
 	}
 }

@@ -36,5 +36,16 @@ namespace DataAccessLayer.Concrete
 				return context.Users.Where(x => x.UserName.ToLower().Contains(value.ToLower())).Take(5).ToList();
 			}
 		}
+
+		public void Delete(int id)
+		{
+			using(VitaskContext context = new VitaskContext())
+			{
+				var user = context.Users.Where(x=> x.Id==id).FirstOrDefault();
+				user.DeletionStateCode = 1;
+				context.Update(user);
+				context.SaveChanges();
+			}
+		}
 	}
 }

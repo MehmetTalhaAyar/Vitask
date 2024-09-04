@@ -12,8 +12,5 @@ namespace DataAccessLayer.Abstract
 
         List<Project> GetAllByUserId(int userId);
 
-
-
-
-    }
+	}
 }

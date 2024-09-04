@@ -1,34 +1,39 @@
 ﻿@using Entities.Concrete
 @model List<Tag>
 @{
-    ViewData["Title"] = "Index";
-    Layout = "~/Views/Shared/LayoutUI.cshtml";
+	ViewData["Title"] = "Index";
+	Layout = "~/Views/Shared/LayoutUI.cshtml";
 }
 
 <nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="/Tag/Index">Tag</a></li>
-        <li class="breadcrumb-item active" aria-current="page">Index</li>
-    </ol>
+	<ol class="breadcrumb">
+		<li class="breadcrumb-item"><a href="/Tag/Index">Tag</a></li>
+		<li class="breadcrumb-item active" aria-current="page">Index</li>
+	</ol>
 </nav>
 
-<table class="table">
-    <thead class="thead-light">
-        <tr>
-            <th scope="col">#</th>
-            <th scope="col">Tag Name</th>
-            <th scope="col">Delete</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <th scope="row">@item.Id</th>
-                <td>@item.Name</td>
-                <td><a href="/Tag/DeleteTag/@item.Id" class="btn btn-danger">Delete</a></td>
-            </tr>
-        }
-    </tbody>
-</table>
-<a href="/Tag/AddTag" class="btn btn-outline-primary">Add Tag</a>
+<div class="table-responsive">
+	<table class="table table-striped table-bordered no-wrap table-hover">
+		<thead>
+			<tr>
+				<th scope="col">#</th>
+				<th scope="col">Tag Name</th>
+				<th scope="col">Delete</th>
+				<th scope="col">Update</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var item in Model)
+			{
+				<tr>
+					<th scope="row">@item.Id</th>
+					<td>@item.Name</td>
+					<td><a href="/Tag/DeleteTag/@item.Id" class="btn btn-danger">Delete</a></td>
+					<td><a href="/Tag/EditTag/@item.Id" class="btn btn-success">Update</a></td>
+				</tr>
+			}
+		</tbody>
+	</table>
+	<a href="/Tag/AddTag" class="btn btn-outline-primary">Add Tag</a>
+
+</div>

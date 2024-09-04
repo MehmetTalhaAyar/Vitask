@@ -16,5 +16,6 @@ namespace DataAccessLayer.Abstract
 
 		AppUser GetById(int id);
 
+		public void Delete(int id);
 	}
 }

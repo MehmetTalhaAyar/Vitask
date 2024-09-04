@@ -15,5 +15,6 @@ namespace DataAccessLayer.Abstract
 		List<int> GetUserIdByProject(int ProjectId);
 
 		void UpdateProjectUserList(List<int> Ids, int ProjectId);
+
 	}
 }

@@ -14,8 +14,19 @@ namespace DataAccessLayer.Concrete
         {
             using(VitaskContext context = new VitaskContext())
             {
-                context.Remove(t);
-                context.SaveChanges();
+                var property = t.GetType().GetProperty("DeletionStateCode");
+
+                if(property != null)
+                {
+                    property.SetValue(t, 1);
+                    context.Update(t);
+                    context.SaveChanges();
+                }
+                else
+                {
+                    context.Remove(t);
+                    context.SaveChanges();
+                }
             }
         }
 

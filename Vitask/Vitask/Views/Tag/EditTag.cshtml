@@ -1,0 +1,28 @@
+﻿@model Entities.Concrete.Tag
+
+
+@{
+    ViewData["Title"] = "EditTag";
+    Layout = "~/Views/Shared/LayoutUI.cshtml";
+}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/Tag/Index">Tag</a></li>
+        <li class="breadcrumb-item active" aria-current="page">EditTag</li>
+    </ol>
+</nav>
+
+<form method="post" action="/Tag/EditTag/">
+
+    <input type="hidden" asp-for="Id" />
+    <div class="input-group mb-3">
+        
+        <input type="text" class="form-control" asp-for="Name" name="Name" placeholder="Tag Name" aria-label="Tag Name" aria-describedby="basic-addon1">
+    </div>
+
+    <div class="form-group">
+
+        <button class="btn btn-outline-primary" type="submit">Update</button>
+    </div>
+</form>

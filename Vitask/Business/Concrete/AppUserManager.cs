@@ -32,5 +32,10 @@ namespace Business.Concrete
 		{
 			return _appUserDal.GetUsersByKeyword(keyword);
 		}
+
+		public void Delete(int id)
+		{
+			_appUserDal.Delete(id);
+		}
 	}
 }

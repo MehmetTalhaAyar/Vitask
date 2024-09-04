@@ -208,6 +208,7 @@ namespace Vitask.Controllers
 				Name = updateProjectViewModel.Name,
 				Description = updateProjectViewModel.Description,
 				CommanderId = updateProjectViewModel.CommanderId,
+                UpdatedOn = DateTime.Now.ToUniversalTime()
 			};
 
 			ProjectValidator validationRules = new ProjectValidator();

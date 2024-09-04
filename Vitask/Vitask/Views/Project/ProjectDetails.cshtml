@@ -13,6 +13,22 @@
 
 }
 
+
+@section Styles {
+	<link href="
+		https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css
+												" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
+}
+
+
+<nav aria-label="breadcrumb">
+	<ol class="breadcrumb">
+		<li class="breadcrumb-item"><a href="/Project/Index">Project</a></li>
+		<li class="breadcrumb-item active" aria-current="page">Project Details</li>
+	</ol>
+</nav>
+
 <div class="form-group">
 	<button data-toggle="modal"
 			data-target="#signup-modal"
@@ -58,21 +74,30 @@
 							}
 
 						</tbody>
-						
+
 					</table>
 				</div>
 			</div>
 			<div class="card-footer d-flex justify-content-end">
-				
-				
+
+
 				<div class="btn-group" role="group">
-					@if(pageInfo.CurrentPage != 1)
+					@if (pageInfo.CurrentPage != 1)
 					{
 						<a href="/Project/ProjectDetails/@id?page=@(pageInfo.CurrentPage-1)" class="btn btn-outline-primary">Önceki sayfa</a>
 					}
-					@for(int i = 1; i <= pageInfo.PageCount; i++)
+					@for (int i = 1; i <= pageInfo.PageCount; i++)
 					{
+						@if(pageInfo.CurrentPage == i)
+						{
+							<a href="/Project/ProjectDetails/@id?page=@i" class="btn btn-primary">@i</a>
+
+						}
+						else
+						{
+							
 						<a href="/Project/ProjectDetails/@id?page=@i" class="btn btn-outline-primary">@i</a>
+						}
 					}
 					@if (pageInfo.CurrentPage != pageInfo.PageCount && pageInfo.PageCount != 0)
 					{
@@ -127,14 +152,14 @@
 
 					<div class="form-group">
 						<label for="dueTime">Due Time</label>
-						<input class="form-control" type="date" asp-for="DueTime" id="dueTime"
+						<input class="form-control" type="datetime-local" asp-for="DueTime" id="dueTime"
 							   required="">
 					</div>
 
 
 					<div class="form-group">
-						<label for="userSelect">Task Responsible</label>
-						<select id="userSelect" class="form-control" asp-for="ResponsibleId">
+						<label for="userSelectResponsible">Task Responsible</label>
+						<select id="userSelectResponsible" class="form-select" data-placeholder="Choose a thing" asp-for="ResponsibleId">
 
 							@foreach (var user in Selects)
 							{
@@ -144,8 +169,8 @@
 					</div>
 
 					<div class="form-group">
-						<label for="userSelect">Task Reporter</label>
-						<select id="userSelect" class="form-control" asp-for="ReporterId">
+						<label for="userSelectReporter">Task Reporter</label>
+						<select id="userSelectReporter" class="form-select" data-placeholder="Choose a thing" asp-for="ReporterId">
 
 							@foreach (var user in Selects)
 							{
@@ -179,3 +204,82 @@
 		</div>
 	</div>
 </div>
+
+
+@section Scripts {
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+	<script src="
+		https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js
+													"></script>
+
+	<script>
+		$(document).ready(function () {
+			$('#userSelectResponsible').select2({
+				theme: 'bootstrap-5',
+				placeholder: $(this).data('placeholder'),
+				width: '100%',
+				allowClear: true,
+				ajax: {
+					url: "/Project/SelectList",
+					dataType: 'json',
+					delay: 250,
+					data: function (params) {
+						return {
+							keyword: params.term,
+
+						};
+					},
+					processResults: function (data) {
+
+
+
+						return {
+							results: data,
+
+						};
+					},
+					cache: true
+				},
+			});
+
+
+				$('#userSelectReporter').select2({
+					theme: 'bootstrap-5',
+					placeholder: $(this).data('placeholder'),
+					width: '100%',
+					allowClear: true,
+					ajax: {
+						url: "/Project/SelectList",
+						dataType: 'json',
+						delay: 250,
+						data: function (params) {
+							return {
+								keyword: params.term,
+
+							};
+						},
+						processResults: function (data) {
+
+
+
+							return {
+								results: data,
+
+							};
+						},
+						cache: true
+					},
+				});
+
+
+
+				});
+
+
+
+	</script>
+
+
+
+}

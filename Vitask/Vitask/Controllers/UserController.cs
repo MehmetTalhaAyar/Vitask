@@ -74,6 +74,33 @@ namespace Vitask.Controllers
 			return RedirectToAction("Index");
 		}
 
+		[Authorize(Roles = "Admin")]
+		[HttpPost]
+		public async Task<IActionResult> UserCreate(SignUpViewModel signUpViewModel)
+		{
+
+			AppUser user = new AppUser()
+			{
+				Name = signUpViewModel.Name,
+				Surname = signUpViewModel.Surname,
+				Email = signUpViewModel.Email,
+				UserName = signUpViewModel.Name + signUpViewModel.Surname
+
+			};
+
+			var result = await _userService.CreateAsync(user, signUpViewModel.Password);
+
+
+
+			if (result.Succeeded)
+			{
+				await _userService.AddToRoleAsync(user, "User");
+			}
+
+			return RedirectToAction("Index");
+		}
+
+
 
 		[Authorize]
 		public List<SelectListItemViewModel> SelectList(string keyword, int? ProjectId, List<int>? selectedUsers = null)

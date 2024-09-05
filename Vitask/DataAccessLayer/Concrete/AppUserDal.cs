@@ -22,8 +22,8 @@ namespace DataAccessLayer.Concrete
 				}
 				else
 				{
-					return context.Users.Skip((Page - 1) * 10).Take(10)
-						.Where(x=> x.Id != exceptId).ToList();
+					return context.Users.Where(x=> x.Id != exceptId)
+						.Skip((Page - 1) * 10).Take(10).ToList();
 				}
 			}
 		}

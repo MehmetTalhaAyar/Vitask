@@ -1,4 +1,5 @@
-﻿
+﻿@model SignUpViewModel
+
 @{
 	ViewData["Title"] = "Index";
 	Layout = "~/Views/Shared/LayoutUI.cshtml";
@@ -15,7 +16,7 @@
 
 <div class="form-group">
 	<button data-toggle="modal"
-	@* data-target="#userCreate-modal" *@
+			data-target="#userCreate-modal" 
 			class="btn btn-rounded btn-outline-info">
 		Add User
 	</button>
@@ -68,24 +69,24 @@
 				<div class="btn-group" role="group">
 					@if (pageInfo.CurrentPage != 1)
 					{
-						<a href="/Project/ProjectDetails/?page=@(pageInfo.CurrentPage-1)" class="btn btn-outline-primary">Previous Page</a>
+						<a href="/User/Index/?page=@(pageInfo.CurrentPage-1)" class="btn btn-outline-primary">Previous Page</a>
 					}
 					@for (int i = 1; i <= pageInfo.PageCount; i++)
 					{
 						@if (pageInfo.CurrentPage == i)
 						{
-							<a href="/Project/ProjectDetails/?page=@i" class="btn btn-primary">@i</a>
+							<a href="/User/Index/?page=@i" class="btn btn-primary">@i</a>
 
 						}
 						else
 						{
 
-							<a href="/Project/ProjectDetails/?page=@i" class="btn btn-outline-primary">@i</a>
+							<a href="/User/Index/?page=@i" class="btn btn-outline-primary">@i</a>
 						}
 					}
 					@if (pageInfo.CurrentPage != pageInfo.PageCount && pageInfo.PageCount != 0)
 					{
-						<a href="/Project/ProjectDetails/?page=@(pageInfo.CurrentPage+1)" class="btn btn-outline-primary">Next Page</a>
+						<a href="/User/Index/?page=@(pageInfo.CurrentPage+1)" class="btn btn-outline-primary">Next Page</a>
 					}
 				</div>
 			</div>
@@ -95,7 +96,7 @@
 </div>
 
 
-@*
+
 
 <div id="userCreate-modal" class="modal fade" tabindex="-1" role="dialog"
 	 aria-hidden="true">
@@ -112,73 +113,35 @@
 					</a>
 				</div>
 
-				<form class="pl-3 pr-3" method="post">
-
-					<input type="hidden" value="@id" asp-for="ProjectId" />
+				<form class="pl-3 pr-3" action="/User/UserCreate/" method="post">
 
 					<div class="form-group">
-						<label for="taskName">Task name</label>
-						<input class="form-control" type="text" asp-for="Name" id="taskName"
+						<label for="Name">Name</label>
+						<input class="form-control" type="text" asp-for="Name" id="Name"
 							   required="">
 					</div>
 
 					<div class="form-group">
-						<label for="description">Description</label>
-						<input class="form-control" type="text" asp-for="Description" id="description"
+						<label for="Surname">Surname</label>
+						<input class="form-control" type="text" asp-for="Surname" id="Surname"
 							   required="">
 					</div>
 
 					<div class="form-group">
-						<label for="priority">Priority</label>
-						<input class="form-control" type="number" asp-for="Priority" id="priority"
+						<label for="Email">Email</label>
+						<input class="form-control" type="email" asp-for="Email" id="Email"
 							   required="">
 					</div>
 
 					<div class="form-group">
-						<label for="dueTime">Due Time</label>
-						<input class="form-control" type="datetime-local" asp-for="DueTime" id="dueTime"
+						<label for="Password">Password</label>
+						<input class="form-control" type="password" asp-for="Password" id="Password"
 							   required="">
 					</div>
-
-
-					<div class="form-group">
-						<label for="userSelectResponsible">Task Responsible</label>
-						<select id="userSelectResponsible" class="form-select" data-placeholder="Choose a thing" asp-for="ResponsibleId">
-
-							@foreach (var user in Selects)
-							{
-								<option value="@user.id">@user.text</option>
-							}
-						</select>
-					</div>
-
-					<div class="form-group">
-						<label for="userSelectReporter">Task Reporter</label>
-						<select id="userSelectReporter" class="form-select" data-placeholder="Choose a thing" asp-for="ReporterId">
-
-							@foreach (var user in Selects)
-							{
-								<option value="@user.id">@user.text</option>
-							}
-						</select>
-					</div>
-
-					<div class="form-group">
-						<label for="userSelect">Tag</label>
-						<select id="userSelect" class="form-control" asp-for="TagId">
-
-							@foreach (var user in tags)
-							{
-								<option value="@user.Id">@user.Name</option>
-							}
-						</select>
-					</div>
-
-
 
 					<div class="form-group text-center">
 						<button class="btn btn-primary" type="submit">
-							Add new Task
+							Add new User
 						</button>
 					</div>
 
@@ -189,4 +152,3 @@
 	</div>
 </div>
 
-*@

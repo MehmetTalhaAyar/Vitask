@@ -179,6 +179,7 @@ namespace Vitask.Controllers
         {
 
             var task = _taskService.GetById(updateTaskViewModel.Id);
+
             task.Name = updateTaskViewModel.Name;
             task.Description = updateTaskViewModel.Description;
             task.UpdatedOn = DateTime.Now.ToUniversalTime();

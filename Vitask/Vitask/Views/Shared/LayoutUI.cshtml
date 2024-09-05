@@ -232,7 +232,7 @@
                                 <img src="/assets/images/Godfather-Film-Afisi.jpg" alt="user" class="rounded-circle"
                                      width="40">
                                 <span class="ml-2 d-none d-lg-inline-block">
-                                    <span>Hello,</span> <span class="text-dark">Kral Kaan</span> <i data-feather="chevron-down"
+                                    <span>Hello,</span> <span class="text-dark">Welcome</span> <i data-feather="chevron-down"
                                                                                                     class="svg-icon"></i>
                                 </span>
                             </a>
@@ -305,47 +305,26 @@
                         <li class="sidebar-item">
                             <a class="sidebar-link sidebar-link" href="/Task/Index/"
                                aria-expanded="false">
-                                <i data-feather="message-square" class="feather-icon"></i><span class="hide-menu">My Tasks</span>
+                                <i class="fas fa-comment-alt"></i><span class="hide-menu">My Tasks</span>
                             </a>
                         </li>
                         <li class="sidebar-item">
                             <a class="sidebar-link sidebar-link" href="/Tag/Index/"
                                aria-expanded="false">
-                                <i class="fa-solid fa-tag"></i><span class="hide-menu">Tags</span>
+                                <i class="fas fa-bookmark"></i><span class="hide-menu">Tags</span>
                             </a>
                         </li>
 
                         <li class="list-divider"></li>
                         <li class="nav-small-cap"><span class="hide-menu">Components</span></li>
                         <li class="sidebar-item">
-                            <a class="sidebar-link has-arrow" href="javascript:void(0)"
-                               aria-expanded="false">
-                                <i data-feather="file-text" class="feather-icon"></i><span class="hide-menu">Forms </span>
-                            </a>
-                            <ul aria-expanded="false" class="collapse  first-level base-level-line">
-                                <li class="sidebar-item">
-                                    <a href="form-inputs.html" class="sidebar-link">
-                                        <span class="hide-menu">
-                                            Form Inputs
-                                        </span>
-                                    </a>
-                                </li>
-                                <li class="sidebar-item">
-                                    <a href="form-input-grid.html" class="sidebar-link">
-                                        <span class="hide-menu">
-                                            Form Grids
-                                        </span>
-                                    </a>
-                                </li>
-                                <li class="sidebar-item">
-                                    <a href="form-checkbox-radio.html" class="sidebar-link">
-                                        <span class="hide-menu">
-                                            Checkboxes &
-                                            Radios
-                                        </span>
-                                    </a>
-                                </li>
-                            </ul>
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <a class="sidebar-link sidebar-link" href="/User/Index/"
+                                    aria-expanded="false">
+                                    <i class="fas fa-users"></i><span class="hide-menu">Users</span>
+                                </a>
+                            }
                         </li>
                         <li class="sidebar-item">
                             <a class="sidebar-link has-arrow" href="javascript:void(0)"

@@ -10,15 +10,17 @@ namespace Business.Abstract
 {
 	public interface IAppUserService
 	{
-		List<AppUser> GetUsersByKeyword(string keyword);
+		List<AppUser> GetUsersByKeyword(string keyword, int? ProjectId);
 
-		List<AppUser> GetAllUsers();
+		List<AppUser> GetAllUsers(int Page,int? exceptId = null);
+
+		public int GetPageCount(int? exceptId = null);
 
 		AppUser GetById(int id);
 
 		void Delete(int id);
 
-		public List<SelectListItemViewModel> SelectList(string keyword, List<int>? selectedUsers = null);
+		public List<SelectListItemViewModel> SelectList(string keyword, int? ProjectId, List<int>? selectedUsers = null);
 
     }
 }

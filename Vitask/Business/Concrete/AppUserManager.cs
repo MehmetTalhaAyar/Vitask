@@ -19,9 +19,9 @@ namespace Business.Concrete
 			_appUserDal = appUserDal;
 		}
 
-		public List<AppUser> GetAllUsers()
+		public List<AppUser> GetAllUsers(int Page,int? exceptId = null)
 		{
-			return _appUserDal.GetAllUsers();
+			return _appUserDal.GetAllUsers(Page,exceptId);
 		}
 
 		public AppUser GetById(int id)
@@ -29,9 +29,9 @@ namespace Business.Concrete
 			return _appUserDal.GetById(id);
 		}
 
-		public List<AppUser> GetUsersByKeyword(string keyword)
+		public List<AppUser> GetUsersByKeyword(string keyword, int? ProjectId)
 		{
-			return _appUserDal.GetUsersByKeyword(keyword);
+			return _appUserDal.GetUsersByKeyword(keyword,ProjectId);
 		}
 
 		public void Delete(int id)
@@ -39,9 +39,9 @@ namespace Business.Concrete
 			_appUserDal.Delete(id);
 		}
 
-        public List<SelectListItemViewModel> SelectList(string keyword, List<int>? selectedUsers = null)
+        public List<SelectListItemViewModel> SelectList(string keyword, int? ProjectId, List<int>? selectedUsers = null)
         {
-            var selectList = GetUsersByKeyword(keyword).Select(x => new SelectListItemViewModel()
+            var selectList = GetUsersByKeyword(keyword,ProjectId).Select(x => new SelectListItemViewModel()
             {
                 id = x.Id,
                 text = x.UserName
@@ -68,5 +68,10 @@ namespace Business.Concrete
             }
             return selectList;
         }
-    }
+
+		public int GetPageCount(int? exceptId = null)
+		{
+			return _appUserDal.GetPageCount(exceptId);
+		}
+	}
 }

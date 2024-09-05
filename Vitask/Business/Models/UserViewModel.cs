@@ -10,5 +10,7 @@
         public string Username { get; set; }
 
         public string Email { get; set; }
+
+        //ileride belki phonenumber eklenebilir
     }
 }

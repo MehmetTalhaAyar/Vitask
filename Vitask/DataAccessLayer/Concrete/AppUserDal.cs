@@ -11,11 +11,37 @@ namespace DataAccessLayer.Concrete
 {
 	public class AppUserDal : IAppUserDal
 	{
-		public List<AppUser> GetAllUsers()
+		public List<AppUser> GetAllUsers(int Page, int? exceptId = null)
 		{
 			using (VitaskContext context = new VitaskContext())
 			{
-				return context.Users.ToList();
+				if(exceptId == null)
+				{
+					return context.Users.Skip((Page - 1) * 10).Take(10)
+						.ToList();
+				}
+				else
+				{
+					return context.Users.Skip((Page - 1) * 10).Take(10)
+						.Where(x=> x.Id != exceptId).ToList();
+				}
+			}
+		}
+
+		public int GetPageCount(int? exceptId = null)
+		{
+			using(VitaskContext context = new VitaskContext())
+			{
+				if(exceptId == null)
+				{
+					double pageCount = (double)context.Users.Count() / 10;
+					return (int)Math.Ceiling(pageCount);
+				}
+				else
+				{
+					double pageCount = (double)context.Users.Where(x=>x.Id != exceptId).Count() / 10;
+					return (int)Math.Ceiling(pageCount);
+				}
 			}
 		}
 
@@ -27,13 +53,24 @@ namespace DataAccessLayer.Concrete
 			}
 		}
 
-		public List<AppUser> GetUsersByKeyword(string keyword)
+		public List<AppUser> GetUsersByKeyword(string keyword,int? ProjectId)
 		{
 
 			var value = keyword != null ? keyword : "";
 			using (VitaskContext context = new VitaskContext())
 			{
-				return context.Users.Where(x => x.UserName.ToLower().Contains(value.ToLower())).Take(5).ToList();
+				if(ProjectId == null)
+				{
+					return context.Users.Where(x => x.UserName.ToLower().Contains(value.ToLower())).Take(5).ToList();
+				}
+				else
+				{
+					var ProjectUsers = context.ProjectUsers.Where(x => x.ProjectId == ProjectId).Select(x => x.UserId).ToList();
+
+					return context.Users.Where(x => x.UserName.ToLower().Contains(value.ToLower()) && ProjectUsers.Contains(x.Id)).Take(5).ToList();
+				}
+
+				
 			}
 		}
 

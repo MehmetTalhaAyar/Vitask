@@ -229,12 +229,13 @@
 				placeholder: $(this).data('placeholder'),
 				width: '100%',
 				ajax: {
-					url: "/Project/SelectList",
+					url: "/User/SelectList/?ProjectId=@(task.Project.Id)",
 					dataType: 'json',
 					delay: 250,
 					data: function (params) {
 						return {
 							keyword: params.term,
+							ProjectId: @task.Project.Id
 						};
 					},
 					processResults: function (data) {
@@ -253,12 +254,13 @@
 				placeholder: $(this).data('placeholder'),
 				width: '100%',
 				ajax: {
-					url: "/Project/SelectList",
+					url: "/User/SelectList/",
 					dataType: 'json',
 					delay: 250,
 					data: function (params) {
 						return {
 							keyword: params.term,
+							ProjectId : @task.Project.Id
 
 						};
 					},

@@ -10,12 +10,14 @@ namespace DataAccessLayer.Abstract
 	public interface IAppUserDal
 	{
 
-		List<AppUser> GetUsersByKeyword(string keyword);
+		List<AppUser> GetUsersByKeyword(string keyword,int? ProjectId);
 
-		List<AppUser> GetAllUsers();
+		List<AppUser> GetAllUsers(int Page, int? exceptId = null);
 
 		AppUser GetById(int id);
 
 		public void Delete(int id);
+
+		public int GetPageCount(int? exceptId = null);
 	}
 }

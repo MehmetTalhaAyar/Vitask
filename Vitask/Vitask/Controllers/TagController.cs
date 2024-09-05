@@ -2,6 +2,7 @@
 using Business.ValidationRules;
 using Entities.Concrete;
 using FluentValidation.Results;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Vitask.Controllers
@@ -13,17 +14,24 @@ namespace Vitask.Controllers
         {
             _tagService = tagService;
         }
+
+        [Authorize]
         public IActionResult Index()
         {
             var values = _tagService.GetAll();
             return View(values);
         }
-        [HttpGet]
+
+
+		[Authorize(Roles = "Admin")]
+		[HttpGet]
         public IActionResult AddTag()
         {
             return View();
         }
-        [HttpPost]
+
+		[Authorize(Roles = "Admin")]
+		[HttpPost]
         public IActionResult AddTag(Tag tag)
         {
             TagValidator validationRules = new TagValidator();
@@ -43,19 +51,25 @@ namespace Vitask.Controllers
             return View();
             
         }
-        public IActionResult DeleteTag(int id)
+
+		[Authorize(Roles = "Admin")]
+		public IActionResult DeleteTag(int id)
         {
             var value = _tagService.GetById(id);
             _tagService.Delete(value);
             return RedirectToAction("Index");
         }
-        [HttpGet]
+
+		[Authorize(Roles = "Admin")]
+		[HttpGet]
         public IActionResult EditTag(int id)
         {
             var value = _tagService.GetById(id);
             return View(value);
         }
-        [HttpPost]
+
+		[Authorize(Roles = "Admin")]
+		[HttpPost]
         public IActionResult EditTag(Tag tag)
         {
             TagValidator validationRules = new TagValidator();

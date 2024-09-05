@@ -20,6 +20,8 @@ builder.Services.AddDbContext<VitaskContext>();
 builder.Services.AddIdentity<AppUser, AppRole>()
     .AddEntityFrameworkStores<VitaskContext>();
 
+
+
 builder.Services.Configure<IdentityOptions>(options =>
 {
     options.User.RequireUniqueEmail = true;
@@ -42,6 +44,12 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Home/Error");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
+}
+
+using(var scope = app.Services.CreateScope())
+{
+
+    Extensions.SeedRoles(scope.ServiceProvider).Wait();
 }
 
 app.UseHttpsRedirection();

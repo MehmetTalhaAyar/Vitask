@@ -70,9 +70,12 @@ namespace Vitask.Controllers
 
             var result = await _userService.CreateAsync(user, signUpViewModel.Password);
 
+            
+
             if (result.Succeeded)
             {
-                return RedirectToAction("Index", "Login");
+				await _userService.AddToRoleAsync(user, "User");
+				return RedirectToAction("Index", "Login");
             }
             else
             {

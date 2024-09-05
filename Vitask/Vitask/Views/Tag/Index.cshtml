@@ -18,8 +18,12 @@
 			<tr>
 				<th scope="col">#</th>
 				<th scope="col">Tag Name</th>
-				<th scope="col">Delete</th>
-				<th scope="col">Update</th>
+				@if (User.IsInRole("Admin"))
+				{
+					<th scope="col">Delete</th>
+					<th scope="col">Update</th>
+				}
+				
 			</tr>
 		</thead>
 		<tbody>
@@ -28,12 +32,18 @@
 				<tr>
 					<th scope="row">@item.Id</th>
 					<td>@item.Name</td>
-					<td><a href="/Tag/DeleteTag/@item.Id" class="btn btn-danger">Delete</a></td>
-					<td><a href="/Tag/EditTag/@item.Id" class="btn btn-success">Update</a></td>
+					@if (User.IsInRole("Admin"))
+					{
+						<td><a href="/Tag/DeleteTag/@item.Id" class="btn btn-outline-danger">Delete</a></td>
+						<td><a href="/Tag/EditTag/@item.Id" class="btn btn-outline-success">Update</a></td>
+					}
 				</tr>
 			}
 		</tbody>
 	</table>
-	<a href="/Tag/AddTag" class="btn btn-outline-primary">Add Tag</a>
+	@if (User.IsInRole("Admin"))
+	{
+		<a href="/Tag/AddTag" class="btn btn-outline-primary">Add Tag</a>
+	}
 
 </div>

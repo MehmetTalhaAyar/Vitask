@@ -150,7 +150,7 @@ namespace Vitask.Controllers
 
 			#endregion
 
-			var selects = _appUserService.SelectList(null, new List<int>() { reporter.Id, responsible.Id });
+			var selects = _appUserService.SelectList(null,task.ProjectId, new List<int>() { reporter.Id, responsible.Id });
             ViewData["Selects"] = selects;
             
             ViewData["Tags"] = allTags;

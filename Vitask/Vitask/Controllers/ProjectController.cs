@@ -51,7 +51,7 @@ namespace Vitask.Controllers
 			
             
             ViewData["Projects"] = values;
-            ViewData["Selects"] = _appUserService.SelectList(null);
+            ViewData["Selects"] = _appUserService.SelectList(null,null,null);
 
             return View();
         }
@@ -124,7 +124,7 @@ namespace Vitask.Controllers
             };
 
             ViewData["AllTasks"] = allTasks;
-            ViewData["Selects"] = _appUserService.SelectList(null);
+            ViewData["Selects"] = _appUserService.SelectList(null,id,null);
             ViewData["Tags"] = allTags;
             ViewData["id"] = id;
             ViewData["PageInfo"] = pageInfo;
@@ -191,7 +191,7 @@ namespace Vitask.Controllers
             };
 
 
-            ViewData["Selects"] = _appUserService.SelectList(null, updateProjectViewModel.UserIds);
+            ViewData["Selects"] = _appUserService.SelectList(null,null, updateProjectViewModel.UserIds);
 
 
             return View(updateProjectViewModel);
@@ -234,12 +234,8 @@ namespace Vitask.Controllers
 
 
 
-        // burayı silemedik çünkü ajax ile buraya istek atılıyor 
-        // appUserControler gibi bir yapı kurulursa oraya taşınması gerekiyor
-        public List<SelectListItemViewModel> SelectList(string keyword, List<int>? selectedUsers = null)
-        {
-            return _appUserService.SelectList(keyword, selectedUsers);
-        }
+        
+       
 
 		}
 }

@@ -7,7 +7,10 @@ using Business.Abstract;
 using Business.Concrete;
 using DataAccessLayer.Abstract;
 using DataAccessLayer.Concrete;
+using Entities.Concrete;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
+using Task = System.Threading.Tasks.Task;
 
 namespace Business.Container
 {
@@ -30,6 +33,52 @@ namespace Business.Container
 
 			Services.AddScoped<IAppUserDal, AppUserDal>();
 			Services.AddScoped<IAppUserService, AppUserManager>();
+		}
+
+
+        public static async Task SeedRoles(IServiceProvider ServiceProvider)
+        {
+			var userManager = ServiceProvider.GetRequiredService<UserManager<AppUser>>();
+			var roleManager = ServiceProvider.GetRequiredService<RoleManager<AppRole>>();
+
+			string[] roleNames = { "Admin", "User" };
+			IdentityResult roleResult;
+
+			foreach (var roleName in roleNames)
+			{
+				var roleExist = await roleManager.RoleExistsAsync(roleName);
+				if (!roleExist)
+				{
+					roleResult = await roleManager.CreateAsync(new AppRole() { Name = roleName});
+				}
+			}
+
+			// İlk Admin Kullanıcıyı Oluşturma
+			var adminUser = new AppUser
+			{
+				UserName = "Kral_Kaan",
+				Email = "firatcikar@hotmail.com",
+				Name = "Fırat",
+				Surname = "Çıkar",
+				
+			};
+
+			var user = await userManager.FindByEmailAsync("firatcikar@hotmail.com");
+
+
+			if (user == null)
+			{
+
+				var createAdmin = await userManager.CreateAsync(adminUser, "Aa123456+"); // buradaki password korunmalı bir yerden gelmeli 
+				if (createAdmin.Succeeded)
+				{
+					await userManager.AddToRoleAsync(adminUser, "Admin");
+				}
+
+				
+			}
+
+			
 		}
     }
 }

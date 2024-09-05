@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Task = Entities.Concrete.Task;
 using Vitask.Models;
+using Newtonsoft.Json.Linq;
 namespace Vitask.Controllers
 {
     public class ProjectController : Controller
@@ -43,12 +44,19 @@ namespace Vitask.Controllers
                 return RedirectToAction("Index", "Login");
             }
 
-            var values = _projectService.GetAllByUserId(user.Id);
+            List<Project> values;
 
-            // admin tüm projeleri görebilecek
-            //var values = _projectService.GetAll();
+            if (User.IsInRole("Admin"))
+            {
+                values = _projectService.GetAll();
+            }
+            else
+            {
+                values = _projectService.GetAllByUserId(user.Id);
+            }
 
-			
+
+			//burada values bir modele dönüştürülecek
             
             ViewData["Projects"] = values;
             ViewData["Selects"] = _appUserService.SelectList(null,null,null);
@@ -70,6 +78,8 @@ namespace Vitask.Controllers
 
             // buraya fluent validation eklenecek
 
+            if (!addProjectViewModel.UserIds.Contains(addProjectViewModel.CommanderId)) // proje lideri her zaman içindedir
+                addProjectViewModel.UserIds.Add(addProjectViewModel.CommanderId);
 
             var NewProject = _projectService.Insert(project);
 
@@ -181,17 +191,23 @@ namespace Vitask.Controllers
         {
             var value = _projectService.GetById(id);
 
+            var userIds = _projectUserService.GetUserIdByProject(value.Id);
+
+            userIds.Add(value.CommanderId);
+
+
             UpdateProjectViewModel updateProjectViewModel = new UpdateProjectViewModel()
             {
                 Id = value.Id,
                 Name = value.Name,
                 Description = value.Description,
                 CommanderId = value.CommanderId,
-                UserIds = _projectUserService.GetUserIdByProject(value.Id)
+                UserIds = userIds
             };
 
+            var selects = _appUserService.SelectList(null, null, updateProjectViewModel.UserIds);
 
-            ViewData["Selects"] = _appUserService.SelectList(null,null, updateProjectViewModel.UserIds);
+            ViewData["Selects"] = selects;
 
 
             return View(updateProjectViewModel);
@@ -226,10 +242,13 @@ namespace Vitask.Controllers
                 foreach (var item in result.Errors)
                 {
                     ModelState.AddModelError(item.PropertyName, item.ErrorMessage);
-                }
+				}
 
             }
-            return View();
+			var userIds = _projectUserService.GetUserIdByProject(updateProjectViewModel.Id);
+            ViewData["Selects"] = _appUserService.SelectList(null, null, updateProjectViewModel.UserIds);
+
+			return View(updateProjectViewModel);
         }
 
 

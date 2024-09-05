@@ -16,8 +16,8 @@ namespace Vitask.Controllers
 
 
         [Authorize]
-        [HttpGet]
-        public async Task<IActionResult> Index(string userName)
+        [HttpGet("/Profile/{userName}")]
+        public async Task<IActionResult> Index([FromRoute] string userName)
         {
             var value = await _userService.FindByNameAsync(userName);
             ProfileViewModel model = new ProfileViewModel()
@@ -26,6 +26,7 @@ namespace Vitask.Controllers
                 Surname = value.Surname,
                 Email = value.Email,
                 PictureUrl = value.PhoneNumber,
+                Username = value.UserName
             };
 
             return View(model);

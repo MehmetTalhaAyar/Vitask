@@ -1,4 +1,5 @@
-﻿using Business.Abstract;
+﻿using System.Security.Claims;
+using Business.Abstract;
 using Business.Models;
 using Business.ValidationRules;
 using Entities.Concrete;
@@ -6,7 +7,9 @@ using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using Vitask.Models;
+using Vitask.Statics;
 using Task = Entities.Concrete.Task;
 
 namespace Vitask.Controllers
@@ -21,21 +24,24 @@ namespace Vitask.Controllers
 
         private readonly ITagService _tagService;
 
-		public TaskController(ITaskService taskService, UserManager<AppUser> userService, IAppUserService appUserService, ITagService tagService)
+        private readonly ICommentService _commentService;
+
+		public TaskController(ITaskService taskService, UserManager<AppUser> userService, IAppUserService appUserService, ITagService tagService, ICommentService commentService)
 		{
 			_taskService = taskService;
 			_userService = userService;
 			_appUserService = appUserService;
 			_tagService = tagService;
+			_commentService = commentService;
 		}
 
 		[Authorize]
         public async Task<IActionResult> Index(int page = 1)
         {
 
-            var user = await _userService.GetUserAsync(User);
+            int userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-            if(user == null)
+			if (userId == null)
             {
                 return RedirectToAction("Index", "Login");
             }
@@ -45,13 +51,29 @@ namespace Vitask.Controllers
            
 
 
-            var pageCount = _taskService.GetPageCountByUserId(user.Id);
+            var pageCount = _taskService.GetPageCountByUserId(userId);
 
             if (page < 1 || page > pageCount)
                 page = 1;
 
+            List<Task> tasks;
 
-			foreach (var task in _taskService.GetAllByResponsibleId(user.Id, page))
+            string key = $"Tasks_Index_{page}";
+
+            if(!CacheManager.TryGetValue(key,out tasks))
+            {
+                tasks = _taskService.GetAllByResponsibleId(userId, page);
+
+                if(tasks != null)
+                {
+                    CacheManager.AddToCache(key, tasks,TimeSpan.FromMinutes(10),"Task");
+                }
+            }
+
+
+
+
+            foreach (var task in tasks)
             {
                 AllMyTaskViewModel taskViewModel = new AllMyTaskViewModel()
                 {
@@ -69,7 +91,7 @@ namespace Vitask.Controllers
                 allTasks.Add(taskViewModel);
             }
 
-				PageInfoModel pageInfoModel = new PageInfoModel()
+			PageInfoModel pageInfoModel = new PageInfoModel()
             {
                 CurrentPage = page,
                 PageCount = pageCount
@@ -85,7 +107,78 @@ namespace Vitask.Controllers
         [Authorize]
 		public IActionResult TaskDetails(int id)
 		{
+			int userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+			if (userId == null)
+                return RedirectToAction("Index", "Login");
+
+            
+
             var task = _taskService.GetTaskWithRelations(id);
+
+
+            var taskComments = _commentService.GetAllByTaskId(task.Id);
+
+            var Ids = taskComments.Select(x => x.Id).ToList();
+
+            Dictionary<int, List<CommentViewModel>?> replysDict = new Dictionary<int, List<CommentViewModel>?>();
+
+            foreach(var item in Ids)
+            {
+
+                var replys = _commentService.GetAllReplys(item);
+                if(replys == null)
+                {
+                    replysDict[item] = null;
+                }
+                else
+                {
+                    List<int> likedCommentsIds = replys.Select(x=> x.Likes.Where(y=> y.UserId == userId).FirstOrDefault()).Where(x=> x != null).Select(x=>x.CommentId).ToList();
+
+                    List<CommentViewModel> replyComments = replys.Select(x => new CommentViewModel()
+                    {
+                        Id = x.Id,
+                        Content = x.Content,
+                        User = new UserViewModel()
+                        {
+                            Id = x.User.Id,
+                            Email = x.User.Email,
+                            Name = x.User.Name,
+                            LastName = x.User.Surname,
+                            Username = x.User.UserName
+                        },
+                        CreatedOn = x.CreatedOn,
+                        isLike = likedCommentsIds.Contains(x.Id),
+                        Replys = null
+                    }).ToList();
+
+                    replysDict[item] = replyComments;
+
+                }
+
+
+            } 
+
+
+            List<int> likedCommentsId = taskComments.Select(x => x.Likes.Where(z => z.UserId == userId).FirstOrDefault()).Where(x=> x != null).Select(x => x.CommentId).ToList();
+
+            List<CommentViewModel> comments = taskComments.Select(x => new CommentViewModel()
+            {
+                Id = x.Id,
+                Content = x.Content,
+                User = new UserViewModel()
+                {
+                    Id = x.User.Id,
+                    Email = x.User.Email,
+                    LastName = x.User.Surname,
+                    Name = x.User.Name,
+                    Username = x.User.UserName
+                },
+                CreatedOn = x.CreatedOn,
+                isLike = likedCommentsId.Contains(x.Id),
+                Replys = replysDict[x.Id]
+            }).ToList();
+
 
 
             #region Model Mapping işlemleri
@@ -132,7 +225,8 @@ namespace Vitask.Controllers
                 Status = task.Status,
                 Tag = tag,
                 ReporterId = reporter,
-                ResponsibleId = responsible
+                ResponsibleId = responsible,
+                Comments = comments
             };
 
 			var tags = _tagService.GetAll();
@@ -154,7 +248,7 @@ namespace Vitask.Controllers
             ViewData["Selects"] = selects;
             
             ViewData["Tags"] = allTags;
-
+            ViewData["UserId"] = userId;
             ViewData["TaskModel"] = TaskViewModel;
 
             UpdateTaskViewModel updateTaskViewModel = new UpdateTaskViewModel()
@@ -192,8 +286,8 @@ namespace Vitask.Controllers
             ///burada validation yapılacak
             
             _taskService.Update(task);
-            
-            return RedirectToAction("Index");
+            CacheManager.RemoveByGroup("Task");
+            return RedirectToAction("TaskDetails","Task",new {id = updateTaskViewModel.Id});
         }
 
 

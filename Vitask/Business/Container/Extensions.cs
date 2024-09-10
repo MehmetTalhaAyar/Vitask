@@ -33,6 +33,17 @@ namespace Business.Container
 
 			Services.AddScoped<IAppUserDal, AppUserDal>();
 			Services.AddScoped<IAppUserService, AppUserManager>();
+
+			Services.AddScoped<ILikeDal, LikeDal>();
+			Services.AddScoped<ILikeService, LikeManager>();
+
+			Services.AddScoped<ICommentDal, CommentDal>();
+			Services.AddScoped<ICommentService, CommentManager>();
+
+			Services.AddScoped<IUserInfoDal, UserInfoDal>();
+			Services.AddScoped<IUserInfoService, UserInfoManager>();
+
+			Services.AddScoped<IFileService, FileManager>();
 		}
 
 

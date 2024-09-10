@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Vitask.Models;
+using Vitask.Statics;
 
 namespace Vitask.Controllers
 {
@@ -94,6 +95,7 @@ namespace Vitask.Controllers
         public async Task<IActionResult> Logout()
         {
 
+            CacheManager.ClearAll();
             await _signInService.SignOutAsync();
             return RedirectToAction("Index", "Login");
 

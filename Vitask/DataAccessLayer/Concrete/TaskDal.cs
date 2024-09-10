@@ -7,13 +7,15 @@ using DataAccessLayer.Abstract;
 using DataAccessLayer.Context;
 using Entities.Concrete;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Task = Entities.Concrete.Task;
 
 namespace DataAccessLayer.Concrete
 {
 	public class TaskDal : GenericRepository<Task>, ITaskDal
 	{
-		public List<Task> GetAllByProjectId(int ProjectId, int page)
+
+        public List<Task> GetAllByProjectId(int ProjectId, int page)
 		{
 			using(VitaskContext context = new VitaskContext())
 			{

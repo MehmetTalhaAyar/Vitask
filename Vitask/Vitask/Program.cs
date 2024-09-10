@@ -4,6 +4,8 @@ using DataAccessLayer.Context;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Caching.Memory;
+using Vitask.Statics;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,7 +16,7 @@ builder.Services.ContainerDependencies();
 
 builder.Services.AddDbContext<VitaskContext>();
 
-
+builder.Services.AddMemoryCache();
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<VitaskContext>();
 builder.Services.AddIdentity<AppUser, AppRole>()
@@ -48,6 +50,9 @@ if (!app.Environment.IsDevelopment())
 
 using(var scope = app.Services.CreateScope())
 {
+    var memoryCache = scope.ServiceProvider.GetRequiredService<IMemoryCache>();
+    CacheManager.Initialize(memoryCache);
+
 
     Extensions.SeedRoles(scope.ServiceProvider).Wait();
 }

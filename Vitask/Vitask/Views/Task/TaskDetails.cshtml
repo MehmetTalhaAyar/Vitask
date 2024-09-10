@@ -7,13 +7,20 @@
 	var tags = ViewData["Tags"] as List<AllTagsViewModel>;
 	var task = ViewData["TaskModel"] as TaskViewModel;
 
+	var userId = ViewData["UserId"];
+
 
 }
 @section Styles {
 	<link href="
 		https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css
-													" rel="stylesheet">
+																" rel="stylesheet">
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
+
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/timeago.js/4.0.2/timeago.min.js"></script>
+
 }
 
 <nav aria-label="breadcrumb">
@@ -26,11 +33,11 @@
 <div class="d-flex">
 
 
-	<div class="col-8 flex-column">
+	<div class="col-8 flex-column d-flex">
 
 
 
-		<div class="form-group">
+		<div class="form-group flex-grow-1 flex-shrink-1">
 
 			<h1>
 				@task.Name
@@ -43,10 +50,96 @@
 		</div>
 
 
-		<div class="form-group">
+		<div class="form-group h-50 pb-5">
 			@*
 			gelecekteki comment yeri olabilir eklenirse
 			*@
+			<form id="AddComment" asp-controller="Comment" asp-action="AddComment" method="post">
+				<div class="input-group mb-3">
+					<input id="TaskId" name="TaskId" type="number" hidden value="@Model.Id" />
+
+					<input id="Content" name="Content" type="text" class="form-control" placeholder="Make a comment">
+					<div class="input-group-append">
+						<button class="btn btn-outline-secondary" type="submit"><i class="bi bi-send"></i></button>
+					</div>
+				</div>
+			</form>
+
+			<div class="form-group">
+				
+
+				 <div class="row">
+					<div class="col" style="overflow-y:scroll; height: 15rem">
+						@foreach(var item in task.Comments)
+						{
+							<div class="d-flex flex-start mt-4">
+								<img class="rounded-circle shadow-1-strong me-3 p-1"
+								src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(10).webp" alt="avatar" width="65"
+								height="65" />
+								<div class="flex-grow-1 flex-shrink-1">
+									<div>
+										<div class="d-flex justify-content-between align-items-center">
+											<p class="mb-1">
+												<a href="/Profile/@item.User.Username"> @(item.User.Name + " " + item.User.LastName)</a> <span class="small">- <time datetime="@item.CreatedOn.ToString("o")">01-01-0001</time></span>
+											</p>
+											<div class="d-flex justify-content-between">
+
+
+												<a href="/Comment/LikeComment/@item.Id?TaskId=@Model.Id"><i class="fas fa-heart @(item.isLike == true ? "text-danger" : "")"></i><span class="small @(item.isLike == true ? "text-danger" : "")"> @(item.isLike == true ? "Liked" : "Like")</span></a>
+
+												<button data-text="@@@item.User.Username#@item.Id#  " onclick="Reply(this)"><i class="fas fa-reply ml-2"></i><span class="small"> Reply</span></button>
+											</div>
+										</div>
+										<p class="small mb-0">
+											@item.Content
+										</p>
+									</div>
+
+									@if(item.Replys != null)
+									{
+									
+									@foreach(var reply in item.Replys)
+									{
+									 <div class="d-flex flex-start mt-4">
+										<a class="me-3" href="#">
+											<img class="rounded-circle shadow-1-strong p-1"
+												 src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(11).webp" alt="avatar"
+												 width="65" height="65" />
+										</a>
+										<div class="flex-grow-1 flex-shrink-1">
+											<div>
+												<div class="d-flex justify-content-between align-items-center">
+													<p class="mb-1">
+															<a href="/Profile/@reply.User.Username"> @(reply.User.Name + " " + reply.User.LastName)</a> <span class="small">- <time datetime="@reply.CreatedOn.ToString("o")">01-01-0001</time></span>
+													</p>
+													<div class="d-flex justify-content-between">
+														
+														<a href="/Comment/LikeComment/@reply.Id?TaskId=@Model.Id"><i class="fas fa-heart @(reply.isLike == true ? "text-danger" : "")"></i><span class="small @(reply.isLike == true ? "text-danger" : "")"> @(reply.isLike == true ? "Liked" : "Like")</span></a>
+
+														<button data-text="@@@reply.User.Username#@reply.Id#  " onclick="Reply(this)"><i class="fas fa-reply ml-2"></i><span class="small"> Reply</span></button>
+													</div>
+												</div>
+												<p class="small mb-0">
+													@reply.Content
+												</p>
+											</div>
+										</div>
+									</div>
+
+									}
+									}
+								</div> 
+							</div>
+
+						}
+						
+						
+					</div>
+				</div> 
+
+
+			</div>
+
 		</div>
 
 	</div>
@@ -217,8 +310,7 @@
 
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 	<script src="
-		https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js
-																		"></script>
+		https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 	<script>
 		// select2 için dinamik bir şekilde kullanıcıları getirme
@@ -236,7 +328,7 @@
 						return {
 							keyword: params.term,
 							ProjectId: @task.Project.Id
-						};
+								};
 					},
 					processResults: function (data) {
 						return {
@@ -260,9 +352,8 @@
 					data: function (params) {
 						return {
 							keyword: params.term,
-							ProjectId : @task.Project.Id
-
-						};
+							ProjectId: @task.Project.Id
+									};
 					},
 					processResults: function (data) {
 						return {
@@ -282,8 +373,18 @@
 
 	</script>
 
-	
+	<script>
+		window.onload = function () {
+			timeago.render(document.querySelectorAll('time'));
+		};
+	</script>
 
+	<script>
 
+		function Reply(element){
+			document.querySelector("#Content").value = element.dataset.text;
+			document.querySelector("#Content").focus();
+		}
+	</script>
 
 }

@@ -24,6 +24,8 @@ namespace Vitask.Models
 
         public ProjectViewModel Project { get; set; }
 
+        public List<CommentViewModel> Comments { get; set; }
+
 
 
 

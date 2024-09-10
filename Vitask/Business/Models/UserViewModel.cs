@@ -12,5 +12,7 @@
         public string Email { get; set; }
 
         //ileride belki phonenumber eklenebilir
+
+        // buraya profile picture gelecek 
     }
 }

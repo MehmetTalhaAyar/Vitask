@@ -4,6 +4,7 @@ using Entities.Concrete;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Vitask.Statics;
 
 namespace Vitask.Controllers
 {
@@ -18,8 +19,23 @@ namespace Vitask.Controllers
         [Authorize]
         public IActionResult Index()
         {
-            var values = _tagService.GetAll();
-            return View(values);
+            List<Tag> tags;
+
+            string key = "Tags_All";
+
+            if(!CacheManager.TryGetValue(key,out tags))
+            {
+
+                tags = _tagService.GetAll();
+
+                if(tags != null)
+                {
+                    CacheManager.AddToCache(key, tags, TimeSpan.FromMinutes(10), "Tag");
+                }
+
+            }
+            
+            return View(tags);
         }
 
 
@@ -39,6 +55,7 @@ namespace Vitask.Controllers
             if (result.IsValid)
             {
                 _tagService.Insert(tag);
+                CacheManager.RemoveByGroup("Tag");
                 return RedirectToAction("Index");
             }
             else
@@ -57,6 +74,7 @@ namespace Vitask.Controllers
         {
             var value = _tagService.GetById(id);
             _tagService.Delete(value);
+            CacheManager.RemoveByGroup("Tag");
             return RedirectToAction("Index");
         }
 
@@ -77,6 +95,7 @@ namespace Vitask.Controllers
             if (result.IsValid)
             {
                 _tagService.Update(tag);
+                CacheManager.RemoveByGroup("Tag");
                 return RedirectToAction("Index");
             }
             else

@@ -32,5 +32,17 @@ namespace Vitask.Controllers
             return View(model);
         }
 
+
+        [Authorize]
+        public IActionResult AccountSettings()
+        {
+
+
+
+            return View();
+        }
+
+
+
     }
 }

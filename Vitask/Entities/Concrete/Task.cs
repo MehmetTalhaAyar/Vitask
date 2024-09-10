@@ -33,6 +33,8 @@ namespace Entities.Concrete
 
         public virtual Tag Tag { get; set; }
 
+        public virtual ICollection<Comment> Comments { get; set; }
+
 
 
 

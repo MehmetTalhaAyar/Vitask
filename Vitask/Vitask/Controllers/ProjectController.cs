@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 using Task = Entities.Concrete.Task;
 using Vitask.Models;
 using Newtonsoft.Json.Linq;
+using Microsoft.Extensions.Caching.Memory;
+using Vitask.Statics;
 namespace Vitask.Controllers
 {
     public class ProjectController : Controller
@@ -24,17 +26,18 @@ namespace Vitask.Controllers
 
         private readonly ITagService _tagService;
 
-		public ProjectController(IProjectService projectService, UserManager<AppUser> userService, IAppUserService appUserService, IProjectUserService projectUserService, ITaskService taskService, ITagService tagService)
-		{
-			_projectService = projectService;
-			_userService = userService;
-			_appUserService = appUserService;
-			_projectUserService = projectUserService;
-			_taskService = taskService;
-			_tagService = tagService;
-		}
 
-		[Authorize]
+        public ProjectController(IProjectService projectService, UserManager<AppUser> userService, IAppUserService appUserService, IProjectUserService projectUserService, ITaskService taskService, ITagService tagService)
+        {
+            _projectService = projectService;
+            _userService = userService;
+            _appUserService = appUserService;
+            _projectUserService = projectUserService;
+            _taskService = taskService;
+            _tagService = tagService;
+        }
+
+        [Authorize]
         public async Task<IActionResult> Index()
         {
             var user = await _userService.GetUserAsync(User);
@@ -46,13 +49,23 @@ namespace Vitask.Controllers
 
             List<Project> values;
 
-            if (User.IsInRole("Admin"))
-            {
-                values = _projectService.GetAll();
-            }
-            else
-            {
-                values = _projectService.GetAllByUserId(user.Id);
+            string cacheKey = "Project_Index";
+
+            if(!CacheManager.TryGetValue(cacheKey,out values)){
+
+                if (User.IsInRole("Admin"))
+                {
+                    values = _projectService.GetAll();
+                }
+                else
+                {
+                    values = _projectService.GetAllByUserId(user.Id);
+                }
+
+                if(values != null)
+                {
+                    CacheManager.AddToCache(cacheKey, values,TimeSpan.FromMinutes(10),"Project");
+                }
             }
 
 
@@ -78,12 +91,17 @@ namespace Vitask.Controllers
 
             // buraya fluent validation eklenecek
 
+            string cacheKey = "Project_Index";
+
             if (!addProjectViewModel.UserIds.Contains(addProjectViewModel.CommanderId)) // proje lideri her zaman içindedir
                 addProjectViewModel.UserIds.Add(addProjectViewModel.CommanderId);
 
             var NewProject = _projectService.Insert(project);
 
             _projectUserService.CreateProjectUserList(addProjectViewModel.UserIds, NewProject.Id);
+
+
+            CacheManager.RemoveByGroup("Project");
 
 			return RedirectToAction("Index");
         }
@@ -97,12 +115,41 @@ namespace Vitask.Controllers
 			if (page < 1 || page > pageCount)
 				page = 1;
 
-			var tasks = _taskService.GetAllByProjectId(id,page);
+            List<Task> tasks;
+            List<Tag> tags;
+
+            string cacheKeyTask = $"Project_ProjectDetails_Tasks_{id}_{page}";
+
+            string cacheKeyTag = "Tags_All";
+            
+            if(!CacheManager.TryGetValue(cacheKeyTask,out tasks))
+            {
+
+			    tasks = _taskService.GetAllByProjectId(id,page);
+
+                if(tasks != null)
+                {
+                    CacheManager.AddToCache(cacheKeyTask, tasks, TimeSpan.FromMinutes(10), "Task");
+                }
+
+            }
+
+            if(!CacheManager.TryGetValue(cacheKeyTag,out tags))
+            {
+                tags = _tagService.GetAll();
+
+                if(tags != null)
+                {
+                    CacheManager.AddToCache(cacheKeyTag, tags, TimeSpan.FromMinutes(10), "Tag");
+                }
+            }
+
+
             List<AllTaskViewModel> allTasks = new List<AllTaskViewModel>();
             List<AllTagsViewModel> allTags = new List<AllTagsViewModel>();
 
             
-
+            //buralar automapper konulduktan sonra cache içine alınacak
             foreach(var task in tasks)
             {
                 AllTaskViewModel taskViewModel = new AllTaskViewModel();
@@ -118,7 +165,7 @@ namespace Vitask.Controllers
                 allTasks.Add(taskViewModel);
             } // allTasks create
 
-            foreach(var tag in _tagService.GetAll())
+            foreach(var tag in tags)
             {
                 AllTagsViewModel allTagsViewModel = new AllTagsViewModel();
                 allTagsViewModel.Name = tag.Name;
@@ -171,17 +218,21 @@ namespace Vitask.Controllers
             // buraya fluent validation eklenecek
 
             _taskService.Insert(task);
+            var pageCount = _taskService.GetPageCount(addTaskViewModel.ProjectId);
+
+
+            CacheManager.RemoveByGroup("Task");
 
             return RedirectToAction("ProjectDetails", "Project", new { id = addTaskViewModel.ProjectId });
         }
 
 
 		[Authorize]
-		public IActionResult DeleteProject(int id) // burası soft delete işlemine çevrilecek
+		public IActionResult DeleteProject(int id) 
         {
             var value = _projectService.GetById(id);
             _projectService.Delete(value);
-            return RedirectToAction("Index");
+            return RedirectToAction("Index");// burası eklendiğinde cache i silmeyi unutma
         }
 
 
@@ -189,19 +240,41 @@ namespace Vitask.Controllers
 		[HttpGet]
         public IActionResult EditProject(int id)
         {
-            var value = _projectService.GetById(id);
+            Project project;
+            List<int> userIds;
 
-            var userIds = _projectUserService.GetUserIdByProject(value.Id);
 
-            userIds.Add(value.CommanderId);
+            string cacheKey = $"Project_EditProject_{id}";
 
+            string cacheKeyUserIds = $"Project_EditProject_UserIds_{id}";
+
+            if(!CacheManager.TryGetValue(cacheKey,out project))
+            {
+
+                project = _projectService.GetById(id);
+
+                if(project != null)
+                {
+                    CacheManager.AddToCache(cacheKey,project,TimeSpan.FromMinutes(10),"Project");
+                }
+
+
+            }
+
+            if(!CacheManager.TryGetValue(cacheKeyUserIds,out userIds))
+            {
+                userIds = _projectUserService.GetUserIdByProject(project.Id);
+                userIds.Add(project.CommanderId);
+
+                CacheManager.AddToCache(cacheKeyUserIds, userIds, TimeSpan.FromMinutes(10), "Project");
+            }
 
             UpdateProjectViewModel updateProjectViewModel = new UpdateProjectViewModel()
             {
-                Id = value.Id,
-                Name = value.Name,
-                Description = value.Description,
-                CommanderId = value.CommanderId,
+                Id = project.Id,
+                Name = project.Name,
+                Description = project.Description,
+                CommanderId = project.CommanderId,
                 UserIds = userIds
             };
 
@@ -232,8 +305,14 @@ namespace Vitask.Controllers
             ValidationResult result = validationRules.Validate(project);
             if (result.IsValid)
             {
+                if (!updateProjectViewModel.UserIds.Contains(updateProjectViewModel.CommanderId)) 
+                    updateProjectViewModel.UserIds.Add(updateProjectViewModel.CommanderId);
+
+
                 _projectService.Update(project);
                 _projectUserService.UpdateProjectUserList(updateProjectViewModel.UserIds, project.Id);
+
+                CacheManager.RemoveByGroup("Project");
 
                 return RedirectToAction("Index");
             }

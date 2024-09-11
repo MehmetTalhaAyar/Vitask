@@ -25,7 +25,7 @@ namespace Vitask.Controllers
                 Name = value.Name,
                 Surname = value.Surname,
                 Email = value.Email,
-                PictureUrl = value.PhoneNumber,
+                PictureUrl = value.Image,
                 Username = value.UserName
             };
 
@@ -34,10 +34,22 @@ namespace Vitask.Controllers
 
 
         [Authorize]
-        public IActionResult AccountSettings()
+        [HttpGet("/MyProfile/AccountSettings")]
+        public async Task<IActionResult> AccountSettings()
         {
 
+            var value = await _userService.GetUserAsync(User);
 
+            ProfileViewModel model = new ProfileViewModel()
+            {
+                Name = value.Name,
+                Surname = value.Surname,
+                Email = value.Email,
+                PictureUrl = value.Image,
+                Username = value.UserName
+            };
+
+            ViewData["User"] = model;
 
             return View();
         }

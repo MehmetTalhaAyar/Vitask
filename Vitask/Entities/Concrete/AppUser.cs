@@ -17,7 +17,7 @@ namespace Entities.Concrete
 
         public int DeletionStateCode { get; set; }
 
-        public string Image { get; set; }
+        public string? Image { get; set; }
 
         public virtual UserInfo UserInfo { get; set; }
 

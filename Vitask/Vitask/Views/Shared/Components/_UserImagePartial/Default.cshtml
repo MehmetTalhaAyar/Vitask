@@ -1,0 +1,11 @@
+﻿
+
+@{
+    Layout = null;
+    var image = ViewData["Image"];
+}
+
+
+
+<img height="40" src="@(image != null ? "/uploads/images/"+image : "/assets/images/default_profile_foto.jpg")" alt="user" class="rounded-circle"
+     width="40">

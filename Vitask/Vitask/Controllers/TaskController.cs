@@ -107,7 +107,7 @@ namespace Vitask.Controllers
         [Authorize]
 		public IActionResult TaskDetails(int id)
 		{
-			int userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+			int? userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
 			if (userId == null)
                 return RedirectToAction("Index", "Login");
@@ -145,7 +145,8 @@ namespace Vitask.Controllers
                             Email = x.User.Email,
                             Name = x.User.Name,
                             LastName = x.User.Surname,
-                            Username = x.User.UserName
+                            Username = x.User.UserName,
+                            Image = x.User.Image
                         },
                         CreatedOn = x.CreatedOn,
                         isLike = likedCommentsIds.Contains(x.Id),
@@ -172,7 +173,8 @@ namespace Vitask.Controllers
                     Email = x.User.Email,
                     LastName = x.User.Surname,
                     Name = x.User.Name,
-                    Username = x.User.UserName
+                    Username = x.User.UserName,
+                    Image = x.User.Image
                 },
                 CreatedOn = x.CreatedOn,
                 isLike = likedCommentsId.Contains(x.Id),
@@ -190,7 +192,8 @@ namespace Vitask.Controllers
                 Name = task.Reporter.Name,
                 LastName = task.Reporter.Surname,
                 Email = task.Reporter.Email,
-                Username = task.Reporter.UserName
+                Username = task.Reporter.UserName,
+                Image = task.Reporter.Image
             }; 
 
             UserViewModel responsible = new UserViewModel()
@@ -199,7 +202,8 @@ namespace Vitask.Controllers
                 Name = task.Responsible.Name,
                 LastName = task.Responsible.Surname,
                 Email = task.Responsible.Email,
-                Username = task.Responsible.UserName
+                Username = task.Responsible.UserName,
+                Image = task.Responsible.Image
             };
 
             ProjectViewModel project = new ProjectViewModel()

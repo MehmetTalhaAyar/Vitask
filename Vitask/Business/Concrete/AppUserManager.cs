@@ -73,5 +73,10 @@ namespace Business.Concrete
 		{
 			return _appUserDal.GetPageCount(exceptId);
 		}
+
+		public void Update(AppUser appUser)
+		{
+			_appUserDal.Update(appUser);
+		}
 	}
 }

@@ -84,5 +84,15 @@ namespace DataAccessLayer.Concrete
 				context.SaveChanges();
 			}
 		}
+
+		public void Update(AppUser appUser)
+		{
+			using(VitaskContext context = new VitaskContext())
+			{
+
+				context.Update(appUser);
+				context.SaveChanges();
+			}
+		}
 	}
 }

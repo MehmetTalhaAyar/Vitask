@@ -22,5 +22,7 @@ namespace Business.Abstract
 
 		public List<SelectListItemViewModel> SelectList(string keyword, int? ProjectId, List<int>? selectedUsers = null);
 
-    }
+
+		public void Update(AppUser appUser);
+	}
 }

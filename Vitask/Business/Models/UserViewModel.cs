@@ -11,8 +11,9 @@
 
         public string Email { get; set; }
 
+        public string Image {  get; set; }
+
         //ileride belki phonenumber eklenebilir
 
-        // buraya profile picture gelecek 
     }
 }

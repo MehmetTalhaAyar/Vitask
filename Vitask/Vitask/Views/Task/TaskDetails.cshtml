@@ -74,7 +74,7 @@
 						{
 							<div class="d-flex flex-start mt-4">
 								<img class="rounded-circle shadow-1-strong me-3 p-1"
-								src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(10).webp" alt="avatar" width="65"
+								src="@(item.User.Image != null ? "/uploads/images/"+item.User.Image : "/assets/images/default_profile_foto.jpg")" alt="avatar" width="65"
 								height="65" />
 								<div class="flex-grow-1 flex-shrink-1">
 									<div>
@@ -103,7 +103,7 @@
 									 <div class="d-flex flex-start mt-4">
 										<a class="me-3" href="#">
 											<img class="rounded-circle shadow-1-strong p-1"
-												 src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(11).webp" alt="avatar"
+														 src="@(reply.User.Image != null ? "/uploads/images/"+reply.User.Image : "/assets/images/default_profile_foto.jpg")" alt="avatar"
 												 width="65" height="65" />
 										</a>
 										<div class="flex-grow-1 flex-shrink-1">

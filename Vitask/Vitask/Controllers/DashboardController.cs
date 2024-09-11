@@ -30,11 +30,12 @@ namespace Vitask.Controllers
 
 
             int TaskCount = _taskService.GetTaskCountForUser(user.Id); // burada aynı zamanda due task count ta gelmesi gerekiyor
-            
 
 
+			
 
-            return View();
+
+			return View();
         }
     }
 }

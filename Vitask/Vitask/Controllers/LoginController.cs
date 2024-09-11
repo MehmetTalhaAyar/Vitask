@@ -1,4 +1,6 @@
-﻿using Entities.Concrete;
+﻿using System.Security.Claims;
+using Business.Abstract;
+using Entities.Concrete;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -14,10 +16,13 @@ namespace Vitask.Controllers
 
         private readonly UserManager<AppUser> _userService;
 
-		public LoginController(SignInManager<AppUser> signInService, UserManager<AppUser> userService)
+        private readonly IAppUserService _appUserService;
+
+		public LoginController(SignInManager<AppUser> signInService, UserManager<AppUser> userService, IAppUserService appUserService)
 		{
 			_signInService = signInService;
 			_userService = userService;
+			_appUserService = appUserService;
 		}
 
 		[AllowAnonymous]
@@ -38,6 +43,11 @@ namespace Vitask.Controllers
 
             if (result.Succeeded)
             {
+
+                var user = await _userService.GetUserAsync(User);
+
+                Claim claim = new Claim("Image",user.Image);
+                await _userService.AddClaimAsync(user,claim);
 
                 return RedirectToAction("Index", "Dashboard");
 

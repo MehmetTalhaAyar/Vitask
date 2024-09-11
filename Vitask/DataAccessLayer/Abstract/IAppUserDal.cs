@@ -19,5 +19,7 @@ namespace DataAccessLayer.Abstract
 		public void Delete(int id);
 
 		public int GetPageCount(int? exceptId = null);
+
+		public void Update(AppUser appUser);
 	}
 }

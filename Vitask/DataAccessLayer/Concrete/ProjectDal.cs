@@ -8,7 +8,7 @@ namespace DataAccessLayer.Concrete
 {
     public class ProjectDal : GenericRepository<Project>, IProjectDal
     {
-        public List<Project> GetAllByUserId(int userId)
+        public List<Project> GetAllByUserId(int userId, int page)
         {
             using (VitaskContext context = new VitaskContext())
             {
@@ -16,7 +16,7 @@ namespace DataAccessLayer.Concrete
                 var projectIds = context.Projects.Include(x => x.Users).Select(x => x.Users.Where(y=> y.UserId == userId).FirstOrDefault()).ToList().Where(x=> x!= null).Select(x => x.ProjectId);
 
                 var projects = context.Projects.Include(x=>x.Commander)
-                    .Where(x => projectIds.Contains(x.Id)).ToList();
+                    .Where(x => projectIds.Contains(x.Id)).Skip((page - 1) * 8).Take(8).ToList();
                 return projects;
                     
 
@@ -33,14 +33,23 @@ namespace DataAccessLayer.Concrete
             }
 		}
 
-		public List<Project> GetAllWithCommander()
+		public List<Project> GetAllWithCommander(int page)
 		{
 			using(VitaskContext context = new VitaskContext())
             {
-                return context.Projects.Include(x => x.Commander).ToList();
+                return context.Projects.Include(x => x.Commander).Skip((page-1) * 8).Take(8).ToList();
 
 
 
+            }
+		}
+
+		public int GetPageCount()
+		{
+            using(VitaskContext context = new VitaskContext())
+            {
+                double pagecount = (double)context.Projects.Count() / 8;
+                return (int)Math.Ceiling(pagecount);
             }
 		}
 	}

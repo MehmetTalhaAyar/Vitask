@@ -8,6 +8,7 @@
 	Layout = "~/Views/Shared/LayoutUI.cshtml";
 	var ProjectList = ViewData["Projects"] as List<ProjectViewModel>;
 	var Selects = ViewData["Selects"] as List<SelectListItemViewModel>;
+	var pageInfo = ViewData["PageInfo"] as PageInfoModel;
 }
 @section Styles {
 	<link href="
@@ -74,6 +75,34 @@
 
 			}
 		}
+	</div>
+
+	<div class="card-footer d-flex justify-content-end">
+
+
+		<div class="btn-group" role="group">
+			@if (pageInfo.CurrentPage != 1)
+			{
+				<a href="/Project/Index/?page=@(pageInfo.CurrentPage-1)" class="btn btn-outline-primary">Previous Page</a>
+			}
+			@for (int i = 1; i <= pageInfo.PageCount; i++)
+			{
+				@if (pageInfo.CurrentPage == i)
+				{
+					<a href="/Project/Index/?page=@i" class="btn btn-primary">@i</a>
+
+				}
+				else
+				{
+
+					<a href="/Project/Index/?page=@i" class="btn btn-outline-primary">@i</a>
+				}
+			}
+			@if (pageInfo.CurrentPage != pageInfo.PageCount && pageInfo.PageCount != 0)
+			{
+				<a href="/Project/Index/?page=@(pageInfo.CurrentPage+1)" class="btn btn-outline-primary">Next Page</a>
+			}
+		</div>
 	</div>
 
 </div>
@@ -152,9 +181,7 @@
 @section Scripts {
 
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
-	<script src="
-		https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js
-								"></script>
+	<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 	<script>
 		$(document).ready(function () {

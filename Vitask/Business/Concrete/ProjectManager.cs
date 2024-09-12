@@ -31,9 +31,9 @@ namespace Business.Concrete
             return _projectDal.GetById(id);
         }
 
-        public List<Project> GetAllByUserId(int userId)
+        public List<Project> GetAllByUserId(int userId,int page)
         {
-            return _projectDal.GetAllByUserId(userId);
+            return _projectDal.GetAllByUserId(userId,page);
         }
 
         public Project Insert(Project t)
@@ -52,9 +52,14 @@ namespace Business.Concrete
 		}
 
 		
-		public List<Project> GetAllWithCommander()
+		public List<Project> GetAllWithCommander(int page)
 		{
-            return _projectDal.GetAllWithCommander();
+            return _projectDal.GetAllWithCommander(page);
+		}
+
+		public int GetPageCount()
+		{
+			return _projectDal.GetPageCount();
 		}
 	}
 }

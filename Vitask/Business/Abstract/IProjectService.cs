@@ -10,10 +10,12 @@ namespace Business.Abstract
     public interface IProjectService : IGenericService<Project>
     {
 
-        List<Project> GetAllByUserId(int userId);
+        List<Project> GetAllByUserId(int userId,int page);
 
 		Project GetByIdWithTasks(int id);
 
-		public List<Project> GetAllWithCommander();
+		public List<Project> GetAllWithCommander(int page);
+
+		public int GetPageCount();
 	}
 }

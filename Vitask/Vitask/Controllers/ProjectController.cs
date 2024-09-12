@@ -39,7 +39,7 @@ namespace Vitask.Controllers
         }
 
         [Authorize]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1)
         {
             var user = await _userService.GetUserAsync(User);
             
@@ -48,20 +48,25 @@ namespace Vitask.Controllers
                 return RedirectToAction("Index", "Login");
             }
 
+            var pageCount = _projectService.GetPageCount();
+
+            if (page < 1 || page > pageCount)
+                page = 1;
+
             List<ProjectViewModel> models;
             List<Project> values;
 
-            string cacheKey = "Project_Index";
+            string cacheKey = $"Project_Index_{page}";
 
             if(!CacheManager.TryGetValue(cacheKey,out models)){
 
                 if (User.IsInRole("Admin"))
                 {
-                    values = _projectService.GetAllWithCommander();
+                    values = _projectService.GetAllWithCommander(page);
                 }
                 else
                 {
-                    values = _projectService.GetAllByUserId(user.Id);
+                    values = _projectService.GetAllByUserId(user.Id,page);
                 }
 
 
@@ -89,10 +94,14 @@ namespace Vitask.Controllers
                     CacheManager.AddToCache(cacheKey, models, TimeSpan.FromMinutes(10),"Project");
                 }
             }
+            PageInfoModel pageInfoModel = new PageInfoModel()
+            {
+                CurrentPage = page,
+                PageCount = pageCount
+            };
 
 
-			//burada values bir modele dönüştürülecek
-            
+            ViewData["PageInfo"] = pageInfoModel;
             ViewData["Projects"] = models;
             ViewData["Selects"] = _appUserService.SelectList(null,null,null);
 

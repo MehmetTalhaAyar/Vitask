@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DataAccessLayer.Abstract;
+using Entities.Concrete;
 
 namespace DataAccessLayer.Concrete
 {
-	public class UserInfoDal : IUserInfoDal
+	public class UserInfoDal : GenericRepository<UserInfo>,IUserInfoDal 
 	{
 	}
 }

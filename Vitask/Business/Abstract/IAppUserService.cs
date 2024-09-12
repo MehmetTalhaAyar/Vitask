@@ -24,5 +24,9 @@ namespace Business.Abstract
 
 
 		public void Update(AppUser appUser);
-	}
+
+		AppUser GetByIdWithUserInfo(int id);
+
+        public AppUser GetByUsernameWithUserInfo(string username);
+    }
 }

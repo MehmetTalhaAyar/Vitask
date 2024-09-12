@@ -15,7 +15,8 @@ namespace DataAccessLayer.Concrete
 
                 var projectIds = context.Projects.Include(x => x.Users).Select(x => x.Users.Where(y=> y.UserId == userId).FirstOrDefault()).ToList().Where(x=> x!= null).Select(x => x.ProjectId);
 
-                var projects = context.Projects.Where(x => projectIds.Contains(x.Id)).ToList();
+                var projects = context.Projects.Include(x=>x.Commander)
+                    .Where(x => projectIds.Contains(x.Id)).ToList();
                 return projects;
                     
 
@@ -23,8 +24,24 @@ namespace DataAccessLayer.Concrete
             }
         }
 
-		
+		public Project GetByIdWithTasks(int id)
+		{
+			using(VitaskContext context = new VitaskContext())
+            {
+                return context.Projects.Include(x => x.Tasks)
+                        .Where(x => x.Id == id).FirstOrDefault();
+            }
+		}
+
+		public List<Project> GetAllWithCommander()
+		{
+			using(VitaskContext context = new VitaskContext())
+            {
+                return context.Projects.Include(x => x.Commander).ToList();
 
 
+
+            }
+		}
 	}
 }

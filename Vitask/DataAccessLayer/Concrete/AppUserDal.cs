@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using DataAccessLayer.Abstract;
 using DataAccessLayer.Context;
 using Entities.Concrete;
+using Microsoft.EntityFrameworkCore;
 
 namespace DataAccessLayer.Concrete
 {
@@ -94,5 +95,23 @@ namespace DataAccessLayer.Concrete
 				context.SaveChanges();
 			}
 		}
-	}
+
+		public AppUser GetByIdWithUserInfo(int id)
+		{
+			using(VitaskContext context = new VitaskContext())
+			{
+				return context.Users.Include(x => x.UserInfo)
+					.Where(x => x.Id == id).FirstOrDefault();
+			}
+		}
+
+        public AppUser GetByUsernameWithUserInfo(string username)
+        {
+            using(VitaskContext context = new VitaskContext())
+			{
+				return context.Users.Include(x => x.UserInfo)
+					.Where(x => x.UserName.Equals(username)).FirstOrDefault();
+			}
+        }
+    }
 }

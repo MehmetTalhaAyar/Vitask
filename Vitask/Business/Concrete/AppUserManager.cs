@@ -47,9 +47,11 @@ namespace Business.Concrete
                 text = x.UserName
             }).ToList();
 
+			
             if (selectedUsers != null)
             {
-                var selectListIds = selectList.Select(x => x.id).ToList();
+				selectedUsers = selectedUsers.Distinct().ToList(); // aynı elemandan varsa alınmayacak
+				var selectListIds = selectList.Select(x => x.id).ToList();
                 var goingtoadds = selectedUsers.Where(x => !selectListIds.Contains(x));
 
                 foreach (var item in goingtoadds)
@@ -78,5 +80,15 @@ namespace Business.Concrete
 		{
 			_appUserDal.Update(appUser);
 		}
-	}
+
+		public AppUser GetByIdWithUserInfo(int id)
+		{
+			return _appUserDal.GetByIdWithUserInfo(id);
+		}
+
+        public AppUser GetByUsernameWithUserInfo(string username)
+        {
+			return _appUserDal.GetByUsernameWithUserInfo(username);
+        }
+    }
 }

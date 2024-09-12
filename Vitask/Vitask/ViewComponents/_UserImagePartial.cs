@@ -19,10 +19,10 @@ namespace Vitask.ViewComponents
         {
             
             var user = await _userService.GetUserAsync((System.Security.Claims.ClaimsPrincipal)User);
-
+        
             ViewData["Image"] = user.Image;
             
-            return View("Default", user.Image);
+            return View("Default");
         }
     }
 }

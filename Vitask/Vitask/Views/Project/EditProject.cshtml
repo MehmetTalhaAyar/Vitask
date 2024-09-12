@@ -66,10 +66,39 @@
 		<button class="btn btn-primary" type="submit">
 			Update Project
 		</button>
+		<button data-toggle="modal"
+				data-target="#projectdelete-modal" class="btn btn-danger ml-5" type="button">
+			Delete Project
+		</button>
 	</div>
 
 </form>
 
+<div id="projectdelete-modal" class="modal fade" tabindex="-1" role="dialog"
+	 aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+
+			<div class="modal-body">
+				<div class="text-center mt-2 mb-4">
+					Are you sure about deleting this project?
+				</div>
+
+
+				<div class="from-group text-center">
+
+					<a href="/Project/DeleteProject/@Model.Id" class="btn btn-success">Delete</a>
+					<button data-toggle="modal"
+							data-target="#projectdelete-modal" class="btn btn-danger">
+						Cancel
+					</button>
+
+				</div>
+				
+			</div>
+		</div>
+	</div>
+</div>
 
 
 @section Scripts {

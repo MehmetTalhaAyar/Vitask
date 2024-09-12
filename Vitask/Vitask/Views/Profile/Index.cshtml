@@ -25,9 +25,9 @@
                     <div class="row align-items-center">
                         <div class="col-md-3">
                             <div class="text-center border-end">
-                                <img width="100px" height="100px" src="@(Model.PictureUrl != null ? "/uploads/images/"+Model.PictureUrl : "/assets/images/default_profile_foto.jpg")" class="img-fluid avatar-xxl rounded-circle" alt="">
+                                <img width="100px" height="100px" src="@(Model.PictureUrl != null ? "/uploads/images/"+Model.PictureUrl : "/assets/images/default_profile_foto.jpg")" class="rounded-circle" alt="">
                                 <h4 class="text-primary font-size-20 mt-3 mb-2">@Model.Name @Model.Surname</h4>
-                                <h5 class="text-muted font-size-13 mb-0">Web Designer</h5>
+                                <h5 class="text-muted font-size-13 mb-0">@(Model.Title != null ? Model.Title : "")</h5>
                             </div>
                         </div><!-- end col -->
                         <div class="col-md-9">
@@ -87,9 +87,7 @@
                     <div class="pb-2">
                         <h4 class="card-title mb-3">About</h4>
                         <p>
-                            Hi I'm Jansh, has been the industry's standard dummy text To an English
-                            person, it will seem like
-                            simplified.
+                            @(Model.About != null ? Model.About : "")
                         </p>
                         <ul class="ps-3 mb-0">
                             <li>it will seem like simplified.</li>
@@ -121,12 +119,19 @@
                                 <tbody>
                                     <tr>
                                         <th scope="row">Name</th>
-                                        <td>Jansh Wells</td>
+                                        <td>@Model.Name @Model.Surname</td>
                                     </tr><!-- end tr -->
-                                    <tr>
-                                        <th scope="row">Location</th>
-                                        <td>California, United States</td>
-                                    </tr><!-- end tr -->
+                                    @if(Model.Location != null)
+                                    {
+                                        <tr>
+
+                                            <th scope="row">Location</th>
+                                            <td>@Model.Location</td>
+                                        </tr>
+
+                                        
+                                    }
+                                    
                                     <tr>
                                         <th scope="row">Language</th>
                                         <td>English</td>

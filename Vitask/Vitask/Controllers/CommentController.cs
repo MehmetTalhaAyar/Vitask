@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Security.Claims;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using Business.Abstract;
 using Business.Models;
 using Entities.Concrete;
@@ -50,7 +51,7 @@ namespace Vitask.Controllers
 
 			};
 		
-			if (Regex.IsMatch(addCommentModel.Content, @"@.*?#\d+#.*?"))
+			if (Regex.IsMatch(addCommentModel.Content, @"@.*?#\d+#.*?")) // commente yanıt verme
 			{
 				
 				var id = int.Parse(addCommentModel.Content.Split("#")[1]);
@@ -67,31 +68,53 @@ namespace Vitask.Controllers
 				comment.Content = text;
 
 				
+			}else if (Regex.IsMatch(addCommentModel.Content, @"#\d+#.*?")) // commenti editleme
+			{
+
+				
+				var id = int.Parse(addCommentModel.Content.Split("#")[1]);
+
+				var text = addCommentModel.Content.Split("#")[2].Trim();
+
+				var editedComment = _commentService.GetById(id);
+
+
+				if (editedComment.UserId != user.Id)
+					return RedirectToAction("TaskDetails", "Task", new { id = addCommentModel.TaskId });
+
+
+				editedComment.Content= text;
+
+				_commentService.Update(editedComment);
+
+
+				return RedirectToAction("TaskDetails", "Task", new { id = addCommentModel.TaskId });
+
 			}
 
-			
 
-			_commentService.Insert(comment);
+
+				_commentService.Insert(comment);
 
 			return RedirectToAction("TaskDetails", "Task", new { id = addCommentModel.TaskId });
 		}
 
-
+		[Authorize]
 		public async Task<IActionResult> LikeComment(int id,int TaskId)
 		{
-			int userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+			int? userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
 			if (userId == null)
 				return RedirectToAction("Index", "Login");
 
 
-			bool isLiked = _likeService.DeleteByCommentIdAndUserId(id, userId);
+			bool isLiked = _likeService.DeleteByCommentIdAndUserId(id, (int)userId);
 
 			if (!isLiked)
 			{
 				Like like = new Like();
 				like.CommentId = id;
-				like.UserId = userId;
+				like.UserId = (int)userId;
 
 				_likeService.Insert(like);
 			}
@@ -100,6 +123,27 @@ namespace Vitask.Controllers
 			
 
 			return RedirectToAction("TaskDetails","Task",new {id = TaskId});
+		}
+
+
+		[Authorize]
+		public IActionResult DeleteComment(int id)
+		{
+			int? userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+			if (userId == null)
+				return RedirectToAction("Index", "Login");
+
+
+			var comment = _commentService.GetById(id);
+
+			if(comment.UserId != (int)userId)
+				return RedirectToAction("TaskDetails", "Task", new { id = comment.TaskId });
+
+			_commentService.Delete(comment);
+
+
+			return RedirectToAction("TaskDetails", "Task", new { id = comment.TaskId });
 		}
 
 

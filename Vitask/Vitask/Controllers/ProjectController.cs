@@ -10,6 +10,7 @@ using Vitask.Models;
 using Newtonsoft.Json.Linq;
 using Microsoft.Extensions.Caching.Memory;
 using Vitask.Statics;
+using Business.Models;
 namespace Vitask.Controllers
 {
     public class ProjectController : Controller
@@ -47,31 +48,52 @@ namespace Vitask.Controllers
                 return RedirectToAction("Index", "Login");
             }
 
+            List<ProjectViewModel> models;
             List<Project> values;
 
             string cacheKey = "Project_Index";
 
-            if(!CacheManager.TryGetValue(cacheKey,out values)){
+            if(!CacheManager.TryGetValue(cacheKey,out models)){
 
                 if (User.IsInRole("Admin"))
                 {
-                    values = _projectService.GetAll();
+                    values = _projectService.GetAllWithCommander();
                 }
                 else
                 {
                     values = _projectService.GetAllByUserId(user.Id);
                 }
 
-                if(values != null)
+
+                models = values.Select(x => new ProjectViewModel()
                 {
-                    CacheManager.AddToCache(cacheKey, values,TimeSpan.FromMinutes(10),"Project");
+                    Id = x.Id,
+                    Name = x.Name,
+                    Description = x.Description,
+                    Leader = new UserViewModel()
+                    {
+                        Id = x.Commander.Id,
+                        Email = x.Commander.Email,
+                        Image = x.Commander.Image,
+                        LastName = x.Commander.Surname,
+                        Name = x.Commander.Name,
+                        Username = x.Commander.UserName
+                    }
+                }).ToList();
+
+
+
+
+                if(models != null)
+                {
+                    CacheManager.AddToCache(cacheKey, models, TimeSpan.FromMinutes(10),"Project");
                 }
             }
 
 
 			//burada values bir modele dönüştürülecek
             
-            ViewData["Projects"] = values;
+            ViewData["Projects"] = models;
             ViewData["Selects"] = _appUserService.SelectList(null,null,null);
 
             return View();
@@ -93,7 +115,7 @@ namespace Vitask.Controllers
 
             string cacheKey = "Project_Index";
 
-            if (!addProjectViewModel.UserIds.Contains(addProjectViewModel.CommanderId)) // proje lideri her zaman içindedir
+            if (!addProjectViewModel.UserIds.Contains(addProjectViewModel.CommanderId)) // proje lideri her zaman projenin içindedir
                 addProjectViewModel.UserIds.Add(addProjectViewModel.CommanderId);
 
             var NewProject = _projectService.Insert(project);
@@ -230,9 +252,18 @@ namespace Vitask.Controllers
 		[Authorize]
 		public IActionResult DeleteProject(int id) 
         {
-            var value = _projectService.GetById(id);
+            var value = _projectService.GetByIdWithTasks(id);
+            
+            foreach(var item in value.Tasks)
+            {
+                _taskService.Delete(item);
+            }
+
             _projectService.Delete(value);
-            return RedirectToAction("Index");// burası eklendiğinde cache i silmeyi unutma
+
+            CacheManager.RemoveByGroup("Project");
+            CacheManager.RemoveByGroup("Task");
+            return RedirectToAction("Index");
         }
 
 

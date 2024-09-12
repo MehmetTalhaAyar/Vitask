@@ -44,10 +44,6 @@ namespace Vitask.Controllers
             if (result.Succeeded)
             {
 
-                var user = await _userService.GetUserAsync(User);
-
-                Claim claim = new Claim("Image",user.Image);
-                await _userService.AddClaimAsync(user,claim);
 
                 return RedirectToAction("Index", "Dashboard");
 

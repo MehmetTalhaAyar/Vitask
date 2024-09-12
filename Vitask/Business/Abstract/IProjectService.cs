@@ -12,6 +12,8 @@ namespace Business.Abstract
 
         List<Project> GetAllByUserId(int userId);
 
-        
-    }
+		Project GetByIdWithTasks(int id);
+
+		public List<Project> GetAllWithCommander();
+	}
 }

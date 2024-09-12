@@ -248,7 +248,7 @@ namespace Vitask.Controllers
 
 			#endregion
 
-			var selects = _appUserService.SelectList(null,task.ProjectId, new List<int>() { reporter.Id, responsible.Id });
+			var selects = _appUserService.SelectList(null,task.ProjectId, new List<int>() { reporter.Id, responsible.Id }); // burada task reporter ve responsible aynı olunca iki kere ekleniyor
             ViewData["Selects"] = selects;
             
             ViewData["Tags"] = allTags;
@@ -294,6 +294,15 @@ namespace Vitask.Controllers
             return RedirectToAction("TaskDetails","Task",new {id = updateTaskViewModel.Id});
         }
 
+        [Authorize]
+		public IActionResult DeleteTask(int id)
+		{
+			var value = _taskService.GetById(id);
+			_taskService.Delete(value);
+			CacheManager.RemoveByGroup("Task");
+			return RedirectToAction("Index");
+		}
+
 
 
 
@@ -322,12 +331,7 @@ namespace Vitask.Controllers
             }
             return View();
         }
-        public IActionResult DeleteTask(int id)
-        {
-            var value = _taskService.GetById(id);
-            _taskService.Delete(value);
-            return RedirectToAction("Index");
-        }
+        
         [HttpGet]
         public IActionResult EditTask(int id)
         {

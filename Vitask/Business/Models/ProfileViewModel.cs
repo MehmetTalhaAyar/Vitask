@@ -9,5 +9,9 @@
         public string? Email { get; set; }
         public string? PictureUrl { get; set; }
 
+        public string? About { get; set; }
+        public string? Location { get; set; }
+        public string? Title { get; set; }
+
     }
 }

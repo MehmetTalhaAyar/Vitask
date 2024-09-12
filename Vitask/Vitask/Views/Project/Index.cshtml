@@ -1,11 +1,12 @@
-﻿@using Entities.Concrete
+﻿@using Business.Models
+@using Entities.Concrete
 @using Vitask.Models
 @model AddProjectViewModel
 
 @{
 	ViewData["Title"] = "Index";
 	Layout = "~/Views/Shared/LayoutUI.cshtml";
-	var ProjectList = ViewData["Projects"] as List<Project>;
+	var ProjectList = ViewData["Projects"] as List<ProjectViewModel>;
 	var Selects = ViewData["Selects"] as List<SelectListItemViewModel>;
 }
 @section Styles {
@@ -27,7 +28,7 @@
 <div class="form-group">
 
 	<button data-toggle="modal"
-			data-target="#signup-modal"
+			data-target="#projectcreate-modal"
 			class="btn btn-rounded btn-outline-info">
 		Create New Project
 	</button>
@@ -47,8 +48,14 @@
 				<div class="col-lg-3 col-md-6">
 					<!-- Card -->
 					<div class="card">
-						<img class="card-img-top img-fluid" src="~/adminmart-master/assets/images/big/img1.jpg"
-							 alt="Card image cap">
+						<div class="d-flex flex-column align-items-center">
+							<img class="rounded-circle m-2" width="100px" height="100px"  src="@(item.Leader.Image != null ? "/uploads/images/"+item.Leader.Image : "/assets/images/default_profile_foto.jpg")" alt="Card image cap">
+							<div class="d-flex w-100 justify-content-around">
+								<span>@item.Leader.Name @item.Leader.LastName</span>
+							</div>
+
+							
+						</div>
 						<div class="card-body">
 							<h4 class="card-title">@item.Name</h4>
 							<p class="card-text">
@@ -73,7 +80,7 @@
 
 
 
-<div id="signup-modal" class="modal fade" tabindex="-1" role="dialog"
+<div id="projectcreate-modal" class="modal fade" tabindex="-1" role="dialog"
 	 aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">

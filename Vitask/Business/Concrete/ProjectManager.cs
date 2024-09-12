@@ -45,5 +45,16 @@ namespace Business.Concrete
         {
             _projectDal.Update(t);
         }
-    }
+
+		public Project GetByIdWithTasks(int id)
+		{
+            return _projectDal.GetByIdWithTasks(id);
+		}
+
+		
+		public List<Project> GetAllWithCommander()
+		{
+            return _projectDal.GetAllWithCommander();
+		}
+	}
 }

@@ -93,13 +93,8 @@ namespace Vitask.Controllers
         [Authorize]
 		public IActionResult TaskDetails(int id)
 		{
-			int? userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-
-			if (userId == null)
-                return RedirectToAction("Index", "Login");
-
+			int userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
             
-
             var task = _taskService.GetTaskWithRelations(id);
 
             var taskVms = _mapper.Map<TaskViewModel>(task);
@@ -111,7 +106,6 @@ namespace Vitask.Controllers
 			var selects = _appUserService.SelectList(null,task.ProjectId, new List<int>() { task.Reporter.Id, task.Responsible.Id });
 
             ViewData["Selects"] = selects;
-            
             ViewData["Tags"] = allTags;
             ViewData["UserId"] = userId;
             ViewData["TaskModel"] = taskVms;
@@ -149,7 +143,8 @@ namespace Vitask.Controllers
                 }
             }
 
-            return View();
+
+            return RedirectToAction("TaskDetails","Task",new { id = updateTaskViewModel.Id});
         }
 
         [Authorize]

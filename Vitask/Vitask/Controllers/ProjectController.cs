@@ -231,7 +231,7 @@ namespace Vitask.Controllers
                 }
             }
 
-            return View(addTaskViewModel);
+            return RedirectToAction("ProjectDetails","Project");
         }
 
 

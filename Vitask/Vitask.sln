@@ -5,11 +5,13 @@ VisualStudioVersion = 17.11.35219.272
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vitask", "Vitask\Vitask.csproj", "{89F4B184-4C81-44E2-8896-21F40F0190C4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Business", "Business\Business.csproj", "{B2747DC9-CA48-4251-AECC-07A9581F05C4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Business", "Business\Business.csproj", "{B2747DC9-CA48-4251-AECC-07A9581F05C4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccessLayer", "DataAccessLayer\DataAccessLayer.csproj", "{2721BD26-EE50-4AC4-8E4C-C1C35E719239}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccessLayer", "DataAccessLayer\DataAccessLayer.csproj", "{2721BD26-EE50-4AC4-8E4C-C1C35E719239}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Entities", "Entities\Entities.csproj", "{ED223999-4867-44E4-8C80-006B0E0AECDF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Entities", "Entities\Entities.csproj", "{ED223999-4867-44E4-8C80-006B0E0AECDF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VitaskTest", "VitaskTest\VitaskTest.csproj", "{83B1E19E-3B91-4396-A094-61C04AAEDB56}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{ED223999-4867-44E4-8C80-006B0E0AECDF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ED223999-4867-44E4-8C80-006B0E0AECDF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ED223999-4867-44E4-8C80-006B0E0AECDF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{83B1E19E-3B91-4396-A094-61C04AAEDB56}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{83B1E19E-3B91-4396-A094-61C04AAEDB56}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{83B1E19E-3B91-4396-A094-61C04AAEDB56}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{83B1E19E-3B91-4396-A094-61C04AAEDB56}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

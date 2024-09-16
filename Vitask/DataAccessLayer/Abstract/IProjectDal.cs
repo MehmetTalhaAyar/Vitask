@@ -17,6 +17,10 @@ namespace DataAccessLayer.Abstract
 
 		public List<Project> GetAllWithCommander(int page);
 
+		public int GetPageCount(int userId);
+
+		public Project GetByIdWithRelations(int id);
+
 		public int GetPageCount();
 	}
 }

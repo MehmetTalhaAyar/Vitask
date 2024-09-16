@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using AutoMapper;
 using Business.Abstract;
 using Business.Models;
 using Entities.Concrete;
@@ -17,11 +18,14 @@ namespace Vitask.Controllers
 
         private readonly IUserInfoService _userInfoService;
 
-		public ProfileController(UserManager<AppUser> userService, IAppUserService appUserService, IUserInfoService userInfoService)
+        private readonly IMapper _mapper;
+
+		public ProfileController(UserManager<AppUser> userService, IAppUserService appUserService, IUserInfoService userInfoService, IMapper mapper)
 		{
 			_userService = userService;
 			_appUserService = appUserService;
 			_userInfoService = userInfoService;
+			_mapper = mapper;
 		}
 
 		[Authorize]
@@ -31,17 +35,7 @@ namespace Vitask.Controllers
 
             var value = _appUserService.GetByUsernameWithUserInfo(userName);
 
-            ProfileViewModel model = new ProfileViewModel()
-            {
-                Name = value.Name,
-                Surname = value.Surname,
-                Email = value.Email,
-                PictureUrl = value.Image,
-                Username = value.UserName,
-                About = value.UserInfo != null ? value.UserInfo.About : null,
-                Location = value.UserInfo != null ? value.UserInfo.Location : null,
-                Title = value.UserInfo != null ? value.UserInfo.Title : null
-            };
+            ProfileViewModel model = _mapper.Map<ProfileViewModel>(value);
 
             return View(model);
         }
@@ -56,26 +50,29 @@ namespace Vitask.Controllers
 
             var user = _appUserService.GetByIdWithUserInfo(userId);
 
-            if (user == null)
-                return RedirectToAction("Index", "Login");
-
-            
-
-            ProfileViewModel model = new ProfileViewModel()
-            {
-                Name = user.Name,
-                Surname = user.Surname,
-                Email = user.Email,
-                PictureUrl = user.Image,
-                Username = user.UserName,
-                About = user.UserInfo != null ? user.UserInfo.About : null,
-                Location = user.UserInfo != null ? user.UserInfo.Location : null,
-                Title = user.UserInfo != null ? user.UserInfo.Title : null  
-            };
+            ProfileViewModel model = _mapper.Map<ProfileViewModel>(user);
 
             ViewData["User"] = model;
 
             return View();
+        }
+
+        [Authorize]
+        [HttpGet("/MyProfile/SecuritySettings")]
+        public  IActionResult SecuritySettings()
+        {
+			int userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+
+            var user = _appUserService.GetById(userId);
+
+            var model = _mapper.Map<UserViewModel>(user);
+
+
+            ViewData["User"] = model;
+
+			return View();
+
         }
 
         [Authorize]
@@ -86,21 +83,11 @@ namespace Vitask.Controllers
 
             var user = _appUserService.GetByIdWithUserInfo(userId);
 
-            if (user == null)
-                return RedirectToAction("Index", "Login");
-
-
             if(user.UserInfo == null)
             {
 
-                UserInfo userInfo = new UserInfo()
-                {
-                    About = updateUserInfoViewModel.About,
-                    Location = updateUserInfoViewModel.Location,
-                    Title = updateUserInfoViewModel.Title,
-                    UserId = userId
-
-                };
+                UserInfo userInfo = _mapper.Map<UserInfo>(updateUserInfoViewModel);
+                userInfo.UserId = userId;
 
 
                 _userInfoService.Insert(userInfo);
@@ -108,11 +95,11 @@ namespace Vitask.Controllers
             }
             else
             {
-                UserInfo userInfo = user.UserInfo;
+                UserInfo userInfo;
 
-                userInfo.Title = updateUserInfoViewModel.Title;
-                userInfo.Location = updateUserInfoViewModel.Location;
-                userInfo.About = updateUserInfoViewModel.About;
+                userInfo = _mapper.Map<UserInfo>(updateUserInfoViewModel);
+                userInfo.UserId = user.Id;
+                userInfo.Id = user.UserInfo.Id;
 
                 _userInfoService.Update(userInfo);
             }

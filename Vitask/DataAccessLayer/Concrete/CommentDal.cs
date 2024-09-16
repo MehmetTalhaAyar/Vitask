@@ -19,6 +19,7 @@ namespace DataAccessLayer.Concrete
 				return context.Comments
 					.Include(x => x.User)
 					.Include(x => x.Likes)
+					.Include(x => x.Replys)
 					.Where(x => x.TaskId == taskId && x.ParentCommentId == null).OrderByDescending(x=>x.CreatedOn).ToList();
 			}
 		}

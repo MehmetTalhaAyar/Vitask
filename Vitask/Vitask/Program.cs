@@ -14,13 +14,18 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.ContainerDependencies();
 
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
 builder.Services.AddDbContext<VitaskContext>();
 
 builder.Services.AddMemoryCache();
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<VitaskContext>();
 builder.Services.AddIdentity<AppUser, AppRole>()
-    .AddEntityFrameworkStores<VitaskContext>();
+    .AddEntityFrameworkStores<VitaskContext>()
+	 .AddDefaultTokenProviders();
+
+builder.Services.AddHttpContextAccessor();
 
 
 

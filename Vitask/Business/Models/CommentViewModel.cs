@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Entities.Concrete;
 using Vitask.Models;
 
 namespace Business.Models
@@ -16,7 +17,7 @@ namespace Business.Models
 
 		public UserViewModel User { get; set; }
 
-		public bool isLike { get; set; } = false;
+        public List<Like> Likes { get; set; }
 
 		public List<CommentViewModel>? Replys { get; set; }
 

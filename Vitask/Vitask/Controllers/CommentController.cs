@@ -47,7 +47,6 @@ namespace Vitask.Controllers
 				Content = addCommentModel.Content,
 				TaskId = addCommentModel.TaskId,
 				UserId = user.Id,
-				
 
 			};
 		

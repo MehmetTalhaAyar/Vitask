@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using AutoMapper;
 using Business.Abstract;
 using Entities.Concrete;
 using Microsoft.AspNetCore.Authorization;
@@ -18,11 +19,14 @@ namespace Vitask.Controllers
 
         private readonly IAppUserService _appUserService;
 
-		public LoginController(SignInManager<AppUser> signInService, UserManager<AppUser> userService, IAppUserService appUserService)
+        private readonly IMapper _mapper;
+
+		public LoginController(SignInManager<AppUser> signInService, UserManager<AppUser> userService, IAppUserService appUserService, IMapper mapper)
 		{
 			_signInService = signInService;
 			_userService = userService;
 			_appUserService = appUserService;
+			_mapper = mapper;
 		}
 
 		[AllowAnonymous]
@@ -38,7 +42,6 @@ namespace Vitask.Controllers
         {
 
 
-            
             var result = await _signInService.PasswordSignInAsync(loginViewModel.Email, loginViewModel.Password, false, false);
 
             if (result.Succeeded)
@@ -66,14 +69,7 @@ namespace Vitask.Controllers
         public async Task<IActionResult> SignUp(SignUpViewModel signUpViewModel)
         {
 
-            AppUser user = new AppUser()
-            {
-                Name = signUpViewModel.Name,
-                Surname = signUpViewModel.Surname,
-                Email = signUpViewModel.Email,
-                UserName = signUpViewModel.Name + signUpViewModel.Surname
-
-            };
+            AppUser user = _mapper.Map<AppUser>(signUpViewModel);
 
             var result = await _userService.CreateAsync(user, signUpViewModel.Password);
 

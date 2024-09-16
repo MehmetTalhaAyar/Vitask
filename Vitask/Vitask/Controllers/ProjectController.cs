@@ -11,6 +11,7 @@ using Newtonsoft.Json.Linq;
 using Microsoft.Extensions.Caching.Memory;
 using Vitask.Statics;
 using Business.Models;
+using AutoMapper;
 namespace Vitask.Controllers
 {
     public class ProjectController : Controller
@@ -27,18 +28,20 @@ namespace Vitask.Controllers
 
         private readonly ITagService _tagService;
 
+        private readonly IMapper _mapper;
 
-        public ProjectController(IProjectService projectService, UserManager<AppUser> userService, IAppUserService appUserService, IProjectUserService projectUserService, ITaskService taskService, ITagService tagService)
-        {
-            _projectService = projectService;
-            _userService = userService;
-            _appUserService = appUserService;
-            _projectUserService = projectUserService;
-            _taskService = taskService;
-            _tagService = tagService;
-        }
+		public ProjectController(IProjectService projectService, UserManager<AppUser> userService, IAppUserService appUserService, IProjectUserService projectUserService, ITaskService taskService, ITagService tagService, IMapper mapper)
+		{
+			_projectService = projectService;
+			_userService = userService;
+			_appUserService = appUserService;
+			_projectUserService = projectUserService;
+			_taskService = taskService;
+			_tagService = tagService;
+			_mapper = mapper;
+		}
 
-        [Authorize]
+		[Authorize]
         public async Task<IActionResult> Index(int page = 1)
         {
             var user = await _userService.GetUserAsync(User);
@@ -48,7 +51,17 @@ namespace Vitask.Controllers
                 return RedirectToAction("Index", "Login");
             }
 
-            var pageCount = _projectService.GetPageCount();
+            int pageCount;
+
+            if (User.IsInRole("Admin"))
+            {
+                pageCount = _projectService.GetPageCount();
+            }
+            else
+            {
+                pageCount = _projectService.GetPageCount(user.Id);
+
+            }
 
             if (page < 1 || page > pageCount)
                 page = 1;
@@ -70,24 +83,7 @@ namespace Vitask.Controllers
                 }
 
 
-                models = values.Select(x => new ProjectViewModel()
-                {
-                    Id = x.Id,
-                    Name = x.Name,
-                    Description = x.Description,
-                    Leader = new UserViewModel()
-                    {
-                        Id = x.Commander.Id,
-                        Email = x.Commander.Email,
-                        Image = x.Commander.Image,
-                        LastName = x.Commander.Surname,
-                        Name = x.Commander.Name,
-                        Username = x.Commander.UserName
-                    }
-                }).ToList();
-
-
-
+                models = _mapper.Map<List<ProjectViewModel>>(values);
 
                 if(models != null)
                 {
@@ -113,28 +109,36 @@ namespace Vitask.Controllers
         public async Task<IActionResult> Index(AddProjectViewModel addProjectViewModel)
         {
 
-            Project project = new Project()
-            {
-                Name = addProjectViewModel.Name,
-                Description = addProjectViewModel.Description,
-                CommanderId = addProjectViewModel.CommanderId,
-            }; // project create
+            Project project = _mapper.Map<Project>(addProjectViewModel);
 
             // buraya fluent validation eklenecek
 
-            string cacheKey = "Project_Index";
+            ProjectValidator validationRules = new ProjectValidator();
+            ValidationResult result = validationRules.Validate(project);
 
-            if (!addProjectViewModel.UserIds.Contains(addProjectViewModel.CommanderId)) // proje lideri her zaman projenin içindedir
-                addProjectViewModel.UserIds.Add(addProjectViewModel.CommanderId);
+            if (result.IsValid)
+            {
+				if (!addProjectViewModel.UserIds.Contains(addProjectViewModel.CommanderId)) // proje lideri her zaman projenin içindedir
+					addProjectViewModel.UserIds.Add(addProjectViewModel.CommanderId);
 
-            var NewProject = _projectService.Insert(project);
+				var NewProject = _projectService.Insert(project);
 
-            _projectUserService.CreateProjectUserList(addProjectViewModel.UserIds, NewProject.Id);
+				_projectUserService.CreateProjectUserList(addProjectViewModel.UserIds, NewProject.Id);
 
 
-            CacheManager.RemoveByGroup("Project");
+				CacheManager.RemoveByGroup("Project");
 
-			return RedirectToAction("Index");
+				return RedirectToAction("Index");
+            }
+            else
+            {
+                foreach(var error in result.Errors)
+                {
+                    ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+                }
+            }
+
+            return View(addProjectViewModel);
         }
 
 
@@ -149,62 +153,41 @@ namespace Vitask.Controllers
             List<Task> tasks;
             List<Tag> tags;
 
-            string cacheKeyTask = $"Project_ProjectDetails_Tasks_{id}_{page}";
+            List<AllTaskViewModel> allTasks;
+            List<AllTagsViewModel> allTags;
+
+			string cacheKeyTask = $"Project_ProjectDetails_Tasks_{id}_{page}";
 
             string cacheKeyTag = "Tags_All";
             
-            if(!CacheManager.TryGetValue(cacheKeyTask,out tasks))
+            if(!CacheManager.TryGetValue(cacheKeyTask,out allTasks))
             {
 
 			    tasks = _taskService.GetAllByProjectId(id,page);
 
-                if(tasks != null)
+                allTasks = _mapper.Map<List<AllTaskViewModel>>(tasks);
+
+                if(allTasks != null)
                 {
-                    CacheManager.AddToCache(cacheKeyTask, tasks, TimeSpan.FromMinutes(10), "Task");
+                    CacheManager.AddToCache(cacheKeyTask, allTasks, TimeSpan.FromMinutes(10), "Task");
                 }
 
             }
 
-            if(!CacheManager.TryGetValue(cacheKeyTag,out tags))
+            if(!CacheManager.TryGetValue(cacheKeyTag,out allTags))
             {
                 tags = _tagService.GetAll();
 
-                if(tags != null)
+                allTags = _mapper.Map<List<AllTagsViewModel>>(tags);
+
+
+				if (allTags != null)
                 {
-                    CacheManager.AddToCache(cacheKeyTag, tags, TimeSpan.FromMinutes(10), "Tag");
+                    CacheManager.AddToCache(cacheKeyTag, allTags, TimeSpan.FromMinutes(10), "Tag");
                 }
             }
 
-
-            List<AllTaskViewModel> allTasks = new List<AllTaskViewModel>();
-            List<AllTagsViewModel> allTags = new List<AllTagsViewModel>();
-
             
-            //buralar automapper konulduktan sonra cache içine alınacak
-            foreach(var task in tasks)
-            {
-                AllTaskViewModel taskViewModel = new AllTaskViewModel();
-                taskViewModel.Priority = task.Priority;
-                taskViewModel.Responsible = task.Responsible.UserName;
-                taskViewModel.Reporter = task.Reporter.UserName;
-                taskViewModel.DueTime = task.DueDate;
-                taskViewModel.Name = task.Name;
-                taskViewModel.Description = task.Description;
-                taskViewModel.Tag = task.Tag.Name;
-                taskViewModel.Id = task.Id;
-
-                allTasks.Add(taskViewModel);
-            } // allTasks create
-
-            foreach(var tag in tags)
-            {
-                AllTagsViewModel allTagsViewModel = new AllTagsViewModel();
-                allTagsViewModel.Name = tag.Name;
-                allTagsViewModel.Id = tag.Id;
-
-                allTags.Add(allTagsViewModel);
-            } //alltags create
-
             PageInfoModel pageInfo = new PageInfoModel()
             {
                 CurrentPage = page,
@@ -217,11 +200,6 @@ namespace Vitask.Controllers
             ViewData["id"] = id;
             ViewData["PageInfo"] = pageInfo;
 
-
-
-
-
-
 			return View();
 		}
 
@@ -231,30 +209,29 @@ namespace Vitask.Controllers
 		public IActionResult ProjectDetails(AddTaskViewModel addTaskViewModel)
         {
 
-            Task task = new Task()
+            Task task = _mapper.Map<Task>(addTaskViewModel);
+
+            TaskValidator validationRules = new TaskValidator();
+            ValidationResult result = validationRules.Validate(task);
+
+            if (result.IsValid)
             {
-                Name = addTaskViewModel.Name,
-                Description = addTaskViewModel.Description,
-                Priority = addTaskViewModel.Priority,
-                ResponsibleId = addTaskViewModel.ResponsibleId,
-                ReporterId = addTaskViewModel.ReporterId,
-                DueDate = addTaskViewModel.DueTime.ToUniversalTime(),
-                ProjectId = addTaskViewModel.ProjectId,
-                TagId = addTaskViewModel.TagId
-                
-
-                
-            }; // task create
-
-            // buraya fluent validation eklenecek
-
-            _taskService.Insert(task);
-            var pageCount = _taskService.GetPageCount(addTaskViewModel.ProjectId);
+				_taskService.Insert(task);
+				var pageCount = _taskService.GetPageCount(addTaskViewModel.ProjectId);
 
 
-            CacheManager.RemoveByGroup("Task");
+				CacheManager.RemoveByGroup("Task");
 
-            return RedirectToAction("ProjectDetails", "Project", new { id = addTaskViewModel.ProjectId });
+				return RedirectToAction("ProjectDetails", "Project", new { id = addTaskViewModel.ProjectId });
+			}else
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+                }
+            }
+
+            return View(addTaskViewModel);
         }
 
 
@@ -281,42 +258,26 @@ namespace Vitask.Controllers
         public IActionResult EditProject(int id)
         {
             Project project;
-            List<int> userIds;
+
+            UpdateProjectViewModel updateProjectViewModel;
+
+			string cacheKey = $"Project_EditProject_{id}";
 
 
-            string cacheKey = $"Project_EditProject_{id}";
-
-            string cacheKeyUserIds = $"Project_EditProject_UserIds_{id}";
-
-            if(!CacheManager.TryGetValue(cacheKey,out project))
+            if(!CacheManager.TryGetValue(cacheKey,out updateProjectViewModel))
             {
 
-                project = _projectService.GetById(id);
+                project = _projectService.GetByIdWithRelations(id);
 
-                if(project != null)
+                updateProjectViewModel = _mapper.Map<UpdateProjectViewModel>(project);
+
+                if(updateProjectViewModel != null)
                 {
-                    CacheManager.AddToCache(cacheKey,project,TimeSpan.FromMinutes(10),"Project");
+                    CacheManager.AddToCache(cacheKey, updateProjectViewModel, TimeSpan.FromMinutes(10),"Project");
                 }
 
 
             }
-
-            if(!CacheManager.TryGetValue(cacheKeyUserIds,out userIds))
-            {
-                userIds = _projectUserService.GetUserIdByProject(project.Id);
-                userIds.Add(project.CommanderId);
-
-                CacheManager.AddToCache(cacheKeyUserIds, userIds, TimeSpan.FromMinutes(10), "Project");
-            }
-
-            UpdateProjectViewModel updateProjectViewModel = new UpdateProjectViewModel()
-            {
-                Id = project.Id,
-                Name = project.Name,
-                Description = project.Description,
-                CommanderId = project.CommanderId,
-                UserIds = userIds
-            };
 
             var selects = _appUserService.SelectList(null, null, updateProjectViewModel.UserIds);
 
@@ -332,14 +293,8 @@ namespace Vitask.Controllers
         {
 
 
-			Project project = new Project()
-			{
-                Id = updateProjectViewModel.Id,
-				Name = updateProjectViewModel.Name,
-				Description = updateProjectViewModel.Description,
-				CommanderId = updateProjectViewModel.CommanderId,
-                UpdatedOn = DateTime.Now.ToUniversalTime()
-			};
+            Project project = _mapper.Map<Project>(updateProjectViewModel);
+            project.UpdatedOn = DateTime.Now.ToUniversalTime();
 
 			ProjectValidator validationRules = new ProjectValidator();
             ValidationResult result = validationRules.Validate(project);
@@ -364,7 +319,7 @@ namespace Vitask.Controllers
 				}
 
             }
-			var userIds = _projectUserService.GetUserIdByProject(updateProjectViewModel.Id);
+			
             ViewData["Selects"] = _appUserService.SelectList(null, null, updateProjectViewModel.UserIds);
 
 			return View(updateProjectViewModel);

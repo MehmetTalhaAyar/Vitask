@@ -1,0 +1,48 @@
+﻿
+@{
+	ViewData["Title"] = "SecuritySettings";
+	Layout = "~/Views/Shared/LayoutUI.cshtml";
+	var user = ViewData["user"] as UserViewModel;
+}
+
+
+<nav class="d-flex justify-content-between" aria-label="breadcrumb">
+	<ol class="breadcrumb">
+		<li class="breadcrumb-item"><a href="/Profile/@user.Username">MyProfile</a></li>
+		<li class="breadcrumb-item active" aria-current="page">Security Settings</li>
+	</ol>
+</nav>
+
+<div class="flex-column d-flex align-items-center">
+	
+
+
+	<form asp-controller="User" asp-action="ChangeSecurity" method="post" class="w-100">
+
+		<div class="input-group mb-3">
+			<input type="text" name="Username" class="form-control" placeholder="Username" asp-for="@user.Username">
+		</div>
+	
+
+
+		<div class="input-group mb-3">
+			<input type="email" name="Email" class="form-control" placeholder="Email" asp-for="@user.Email">
+		</div>
+
+
+		<div class="input-group mb-3">
+			<input type="password" name="Password" class="form-control" placeholder="Password">
+		</div>
+		<button class="btn btn-outline-secondary" type="submit" id="Username">Update</button>
+
+	</form>
+
+
+
+
+		
+
+		
+
+
+</div>

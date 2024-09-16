@@ -44,12 +44,30 @@ namespace DataAccessLayer.Concrete
             }
 		}
 
-		public int GetPageCount()
+        public int GetPageCount()
+        {
+            using(VitaskContext context = new VitaskContext())
+            {
+                double pageCount = (double)context.Projects.Count() / 8;
+                return (int)Math.Ceiling(pageCount);
+            }
+        }
+
+		public int GetPageCount(int userId)
 		{
             using(VitaskContext context = new VitaskContext())
             {
-                double pagecount = (double)context.Projects.Count() / 8;
+                double pagecount = (double)context.Projects.Include(x => x.Users).Where(x=> x.Users.Any(y=> y.UserId == userId)).Count() / 8;
                 return (int)Math.Ceiling(pagecount);
+            }
+		}
+        
+
+		public Project GetByIdWithRelations(int id)
+		{
+            using (VitaskContext context = new VitaskContext())
+            {
+                return context.Projects.Include(x=> x.Users).Where(x=> x.Id == id).FirstOrDefault();  
             }
 		}
 	}

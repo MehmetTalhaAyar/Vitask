@@ -57,9 +57,19 @@ namespace Business.Concrete
             return _projectDal.GetAllWithCommander(page);
 		}
 
+		public int GetPageCount(int userId)
+		{
+			return _projectDal.GetPageCount(userId);
+		}
+
+		public Project GetByIdWithRelations(int id)
+		{
+			return _projectDal.GetByIdWithRelations(id);
+		}
+
 		public int GetPageCount()
 		{
-			return _projectDal.GetPageCount();
+            return _projectDal.GetPageCount();
 		}
 	}
 }

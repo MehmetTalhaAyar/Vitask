@@ -17,7 +17,6 @@ namespace Business.Models
 		public int ReporterId { get; set; }
 		public int TagId { get; set; }
 
-		//public int ProjectId { get; set; }
 
 
 

@@ -18,6 +18,7 @@ namespace Business.ValidationRules
             RuleFor(x => x.Description).MinimumLength(5).WithMessage("Min 5 karakter giriniz");
             RuleFor(x => x.Description).MaximumLength(500).WithMessage("Max 500 karakter giriniz");
             RuleFor(x => x.Priority).GreaterThan(0).LessThan(10);
+            RuleFor(x => x.DueDate).GreaterThan(DateTime.Now);
         }
     }
 }

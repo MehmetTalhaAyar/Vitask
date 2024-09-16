@@ -91,7 +91,7 @@
 											<div class="d-flex justify-content-between">
 
 
-												<a class="btn btn-link" href="/Comment/LikeComment/@item.Id?TaskId=@Model.Id"><i class="fas fa-heart @(item.isLike == true ? "text-danger" : "")"></i><span class="small @(item.isLike == true ? "text-danger" : "")"> @(item.isLike == true ? "Liked" : "Like")</span></a>
+													<a class="btn btn-link" href="/Comment/LikeComment/@item.Id?TaskId=@Model.Id"><i class="fas fa-heart @(item.Likes.Any(x => x.UserId == userId) ? "text-danger" : "")"></i><span class="small @(item.Likes.Any(x => x.UserId == userId) ? "text-danger" : "")"> @(item.Likes.Any(x => x.UserId == userId) ? "Liked" : "Like")</span></a>
 
 												<button class="btn btn-link" data-text="@@@item.User.Username#@item.Id#  " onclick="Reply(this)"><i class="fas fa-reply ml-2"></i><span class="small"> Reply</span></button>
 												
@@ -127,7 +127,7 @@
 													</p>
 													<div class="d-flex justify-content-between">
 
-														<a class="btn btn-link" href="/Comment/LikeComment/@reply.Id?TaskId=@Model.Id"><i class="fas fa-heart @(reply.isLike == true ? "text-danger" : "")"></i><span class="small @(reply.isLike == true ? "text-danger" : "")"> @(reply.isLike == true ? "Liked" : "Like")</span></a>
+														<a class="btn btn-link" href="/Comment/LikeComment/@reply.Id?TaskId=@Model.Id"><i class="fas fa-heart @(reply.Likes.Any(x => x.UserId == userId) ? "text-danger" : "")"></i><span class="small @(reply.Likes.Any(x => x.UserId == userId) == true ? "text-danger" : "")"> @(reply.Likes.Any(x => x.UserId == userId) ? "Liked" : "Like")</span></a>
 
 														<button class="btn btn-link" data-text="@@@reply.User.Username#@reply.Id#  " onclick="Reply(this)"><i class="fas fa-reply ml-2"></i><span class="small"> Reply</span></button>
 

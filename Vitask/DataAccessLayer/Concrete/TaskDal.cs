@@ -83,13 +83,25 @@ namespace DataAccessLayer.Concrete
         {
             using(VitaskContext context = new VitaskContext())
 			{
-				return context.Tasks
+				var tasks =  context.Tasks
 					.Include(x => x.Responsible)
 					.Include(x => x.Reporter)
 					.Include(x => x.Tag)
 					.Include(x => x.Project)
+					.Include(x=>x.Comments)
+					.ThenInclude(x=>x.Replys)
+					.ThenInclude(x=>x.Likes)
+					.Include(x=>x.Comments)
+					.ThenInclude(x=>x.Likes)
+					.Include(x=>x.Comments)
+					.ThenInclude(x=>x.User)
+					.Include(x=>x.Comments)
+					.ThenInclude(x=>x.Replys)
+					.ThenInclude(x=>x.User)
 					.Where(x => x.Id == id).FirstOrDefault();
-
+				var comments = tasks.Comments.Where(x => x.ParentCommentId == null).ToList();
+				tasks.Comments = comments;
+				return tasks;
             }
         }
     }

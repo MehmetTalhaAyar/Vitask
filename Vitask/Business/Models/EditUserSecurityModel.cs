@@ -7,14 +7,15 @@ using System.Threading.Tasks;
 
 namespace Business.Models
 {
-    public class AddCommentModel
-    {
-        
-        public int TaskId { get; set; }
+	public class EditUserSecurityModel
+	{
+		[Required]
+		public string Username { get; set; }
 
-        [Required]
-        public string Content { get; set; }
+		[Required]
+		public string Email { get; set; }
 
-
-    }
+		[Required]
+		public string Password { get; set; }
+	}
 }

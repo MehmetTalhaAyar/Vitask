@@ -19,7 +19,11 @@ namespace Business.AutoMapper
 				.ForMember(dest => dest.Leader,opt=> opt.MapFrom(src=> src.Commander));
 
 			CreateMap<AddProjectViewModel, ProjectViewModel>()
-				.ForSourceMember(dest => dest.UserIds, opt => opt.DoNotValidate());
+				.ForSourceMember(dest => dest.UserIds, opt => opt.DoNotValidate()).ReverseMap();
+
+			CreateMap<AddProjectViewModel,Project>()
+				.ForSourceMember(dest => dest.UserIds, opt => opt.DoNotValidate()).ReverseMap();
+
 
 			CreateMap<Project, UpdateProjectViewModel>()
 				.ForMember(dest => dest.UserIds, opt => opt.MapFrom(src => src.Users.Select(x => x.UserId).ToList())).ReverseMap();

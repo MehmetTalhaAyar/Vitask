@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("VitaskTest")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4f54996f71ace36540a10f04c703b0701ec6a377")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7969e1563f4cfb5a4758b6ebe56cd4c1920e2be0")]
 [assembly: System.Reflection.AssemblyProductAttribute("VitaskTest")]
 [assembly: System.Reflection.AssemblyTitleAttribute("VitaskTest")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
